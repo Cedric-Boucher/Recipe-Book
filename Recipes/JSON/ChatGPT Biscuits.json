@@ -1,0 +1,100 @@
+{
+    "Versions": [
+        {
+            "Title": "ChatGPT Biscuits",
+            "Version Description": "Original",
+            "Pictures": [
+                "ChatGPT_Biscuits_1.webp",
+                "ChatGPT_Biscuits_2.webp"
+            ],
+            "Amount": {
+                "Portions": 8, 
+                "Total Mass (g)": null,
+                "Total Volume (mL)": null,
+                "Total Calories (kcal)": null,
+                "Total Carbohydrates (g)": null,
+                "Total Fat (g)": null,
+                "Total Protein (g)": null,
+                "Total Fibre (g)": null
+            },
+            "Requirements": {
+                "Ingredients": {
+                    "Old-Fashioned Oats": {
+                        "Amount": 250,
+                        "Units": "mL"
+                    },
+                    "Whole Wheat Flour": {
+                        "Amount": 125,
+                        "Units": "mL"
+                    },
+                    "Almond Flour": {
+                        "Amount": 62.5,
+                        "Units": "mL"
+                    },
+                    "Chia Seeds": {
+                        "Amount": 30,
+                        "Units": "mL"
+                    },
+                    "Baking Powder": {
+                        "Amount": 5,
+                        "Units": "mL"
+                    },
+                    "Baking Soda": {
+                        "Amount": 2.5,
+                        "Units": "mL"
+                    },
+                    "Salt": {
+                        "Amount": 1.25,
+                        "Units": "mL"
+                    },
+                    "Maple Syrup": {
+                        "Amount": 30,
+                        "Units": "mL"
+                    },
+                    "Unsweetened Applesauce": {
+                        "Amount": 125,
+                        "Units": "mL"
+                    },
+                    "Large Eggs": {
+                        "Amount": 2,
+                        "Units": "count"
+                    },
+                    "Greek Yogurt": {
+                        "Amount": 62.5,
+                        "Units": "mL"
+                    },
+                    "Coconut Oil": {
+                        "Amount": 30,
+                        "Units": "mL"
+                    },
+                    "Vanilla Extract": {
+                        "Amount": 5,
+                        "Units": "mL"
+                    }
+                },
+                "Equipment": [
+                    "Oven",
+                    "Baking Sheet",
+                    "Large Bowl",
+                    "Mixing Spoon",
+                    "Medium Bowl",
+                    "Whisk"
+                ],
+                "Time": {
+                    "Unattended Time (minutes)": 15,
+                    "Attended Time (minutes)": null
+                }
+            },
+            "Instructions": [
+                "Preheat Oven to 375F / 190C",
+                "Line baking sheet with silicone liner, parchment paper or grease",
+                "Combine dry ingredients in large bowl: oats, whole wheat flour, almond flour, chia seeds, baking powder, baking soda, salt. Mix well",
+                "Combine wet ingredients in medium bowl: maple syrup, applesauce, eggs, greek yogurt, coconut oil, vanilla extract. Whisk together",
+                "Mix wet and dry ingredients in large bowl. Stir until just combined, do not overmix",
+                "Form biscuits with tablespoon or hands. Drop formed dough onto baking sheet",
+                "Bake for 12-15 minutes"
+            ],
+            "Date Created (DD/MM/YYYY)": "10/04/2024"
+        }
+    ]
+}
