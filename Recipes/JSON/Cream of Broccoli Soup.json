@@ -1,0 +1,83 @@
+{
+    "Versions": [
+        {
+            "Title": "Cream of Broccoli Soup",
+            "Version Description": "The Healthy Kitchen",
+            "Pictures": [
+
+            ],
+            "Amount": { // TODO recalculate the amounts here
+                "Portions": 6,
+                "Total Mass (g)": null,
+                "Total Volume (mL)": null,
+                "Total Calories (kcal)": 880,
+                "Total Carbohydrates (g)": 110,
+                "Total Sugar (g)": 30,
+                "Total Fat (g)": 42,
+                "Total Protein (g)": 42,
+                "Total Fibre (g)": 50
+            },
+            "Requirements": {
+                "Ingredients": {
+                    "Butter": {
+                        "Amount": 15,
+                        "Units": "mL"
+                    },
+                    "Yellow Onion": {
+                        "Amount": 1,
+                        "Units": "count"
+                    },
+                    "Garlic": {
+                        "Amount": 3,
+                        "Units": "cloves"
+                    },
+                    "Broccoli": { // TODO convert to grams
+                        "Amount": 3,
+                        "Units": "L",
+                        "Notes": "About 2 large heads of broccoli"
+                    },
+                    "Vegetable Broth": {
+                        "Amount": 1500,
+                        "Units": "mL"
+                    },
+                    "Avocado": {
+                        "Amount": 1,
+                        "Units": "count"
+                    },
+                    "Salt": {
+                        "Amount": 5,
+                        "Units": "mL"
+                    },
+                    "Pepper": {
+                        "Amount": 5,
+                        "Units": "mL"
+                    }
+                },
+                "Equipment": [
+                    "Cutting Board",
+                    "Chef's Knife",
+                    "Stovetop",
+                    "Large Pot",
+                    "Blender"
+                ],
+                "Time": {
+                    "Unattended Time (minutes)": 5,
+                    "Attended Time (minutes)": 20
+                }
+            },
+            "Instructions": [
+                "Melt butter in large pot",
+                "Add onion and garlic to large pot",
+                "Saute for 5 minutes",
+                "Add broccoli and broth to large pot",
+                "Bring contents to a boil",
+                "Once boiling, cook at a gentle boil with lid until broccoli is tender",
+                "Remove from heat",
+                "Add avocado to large pot",
+                "Use blender to puree soup until smooth",
+                "Add salt and pepper to soup"
+            ],
+            "Date Created (DD/MM/YYYY)": "12/05/2024"
+        }
+    ]
+}
