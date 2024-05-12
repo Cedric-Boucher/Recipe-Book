@@ -1,0 +1,80 @@
+{
+    "Versions": [
+        {
+            "Title": "Pancakes",
+            "Version Description": "Original",
+            "Pictures": [
+
+            ],
+            "Amount": { // TODO calculate the amounts here
+                "Portions": null,
+                "Total Mass (g)": null,
+                "Total Volume (mL)": null,
+                "Total Calories (kcal)": null,
+                "Total Carbohydrates (g)": null,
+                "Total Sugar (g)": null,
+                "Total Fat (g)": null,
+                "Total Protein (g)": null,
+                "Total Fibre (g)": null
+            },
+            "Requirements": {
+                "Ingredients": {
+                    "Flour": {
+                        "Amount": 500,
+                        "Units": "mL"
+                    },
+                    "Baking Powder": {
+                        "Amount": 30,
+                        "Units": "mL"
+                    },
+                    "Sugar": {
+                        "Amount": 62.5,
+                        "Units": "mL"
+                    },
+                    "Salt": {
+                        "Amount": 7.5,
+                        "Units": "mL"
+                    },
+                    "Eggs": {
+                        "Amount": 2,
+                        "Units": "count"
+                    },
+                    "Almond Milk": {
+                        "Amount": 500,
+                        "Units": "mL"
+                    },
+                    "Oil": {
+                        "Amount": 62.5,
+                        "Units": "mL"
+                    }
+                },
+                "Equipment": [
+                    "Stovetop",
+                    "Large Bowl",
+                    "Whisk",
+                    "Ladle",
+                    "Spatula",
+                    "Large Cooking Pan"
+                ],
+                "Time": {
+                    "Unattended Time (minutes)": null,
+                    "Attended Time (minutes)": null
+                }
+            },
+            "Instructions": [
+                "Preheat cooking pan on stovetop on medium heat",
+                "Mix dry ingredients in large bowl",
+                "Add liquid ingredients on top of dry ingredients",
+                "Whisk together wet ingredients",
+                "Whisk wet ingredients into dry ingredients",
+                "Pour one ladlefull of mixture onto cooking pan",
+                "Cook pancake on medium heat until bottom is golden brown. To check bottom, gently lift an edge with spatula and look underneath",
+                "Once bottom is golden brown, flip pancake with spatula",
+                "Cook pancake until bottom is golden brown",
+                "Remove pancake from cooking pan with spatula and serve",
+                "Repeat cooking process until out of mixture"
+            ],
+            "Date Created (DD/MM/YYYY)": "12/05/2024"
+        }
+    ]
+}
