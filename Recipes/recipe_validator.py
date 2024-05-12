@@ -6,3 +6,5 @@
 # 5. picture file names are valid and point to existing pictures in Pictures folder
 
 # create enums for Python for things that should be enums
+
+# it's not well defined when ingredient names shouldbe singular or plural, ingredients should be enums too (names that only exist in one place)
