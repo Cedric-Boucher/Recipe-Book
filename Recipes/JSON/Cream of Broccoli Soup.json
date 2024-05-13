@@ -4,7 +4,8 @@
             "Title": "Cream of Broccoli Soup",
             "Version Description": "The Healthy Kitchen",
             "Pictures": [
-
+                "Cream_of_Broccoli_Soup_1.webp",
+                "Cream_of_Broccoli_Soup_2.webp"
             ],
             "Amount": { // TODO recalculate the amounts here
                 "Portions": 6,
