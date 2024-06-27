@@ -11,10 +11,11 @@
 
 import sqlite3
 from typing import Any
+import os
 
 class Database:
     def __init__(self, filename: str):
-        self.__filename: str = filename
+        self.__filename: str = os.path.abspath(filename)
         self.__connection: None | sqlite3.Connection = None
         self.__cursor: None | sqlite3.Cursor = None
 
@@ -23,13 +24,13 @@ class Database:
             self.__connection = sqlite3.connect(self.__filename)
             print("sqlite3 version: {}".format(sqlite3.sqlite_version))
         except sqlite3.Error as e:
-            print(e)
+            print("SQLITE ERROR: {}".format(e))
 
         if self.__connection is not None:
             try:
                 self.__cursor = self.__connection.cursor()
             except sqlite3.Error as e:
-                print(e)
+                print("SQLITE ERROR: {}".format(e))
 
     def run_query(self, query: str) -> list[Any]:
         assert (self.__cursor is not None)
@@ -43,7 +44,7 @@ class Database:
             self.__connection.close()
 
 if __name__ == "__main__":
-    initial_setup_queries: list[str] = [
+    initial_setup_queries: list[str] = [ # FIXME there is no sqlite way to auto-update datetimes
         """
         PRAGMA foreign_keys = ON;
         """,
@@ -51,6 +52,8 @@ if __name__ == "__main__":
         CREATE TABLE IF NOT EXISTS `recipes` (
             `recipe_id` INT NOT NULL PRIMARY KEY,
             `name` TEXT NOT NULL UNIQUE
+            `datetime_created` INT NOT NULL,
+            `datetime_updated` INT NOT NULL
         );
         """,
         """
@@ -124,8 +127,51 @@ if __name__ == "__main__":
         """
         CREATE TABLE IF NOT EXISTS `nutrition_info` (
             `nutrition_info_id` INT NOT NULL PRIMARY KEY,
-            `amount_grams` INT NOT NULL,
-            `calories` INT NOT NULL
+            `l_per_kg` REAL NOT NULL,
+            `kilocalories_per_kg` INT NOT NULL,
+            `g_fat_per_kg` REAL NOT NULL,
+            `g_saturated_fat_per_kg` REAL NOT NULL,
+            `g_trans_fat_per_kg` REAL NOT NULL,
+            `g_omega6_polyunsaturated_fat_per_kg` REAL NULL,
+            `g_omega3_polyunsaturated_fat_per_kg` REAL NULL,
+            `g_monounsaturated_fat_per_kg` REAL NULL,
+            `g_carbohydrate_per_kg` REAL NOT NULL,
+            `g_dietary_fibre_per_kg` REAL NOT NULL,
+            `g_soluble_fibre_per_kg` REAL NULL,
+            `g_insoluble_fibre_per_kg` REAL NULL,
+            `g_sugars_per_kg` REAL NOT NULL,
+            `g_sugar_alcohols_per_kg` REAL NULL,
+            `g_starch_per_kg` REAL NULL,
+            `g_protein_per_kg` REAL NOT NULL,
+            `g_cholesterol_per_kg` REAL NOT NULL,
+            `mg_sodium_per_kg` REAL NOT NULL,
+            `mg_potassium_per_kg` REAL NOT NULL,
+            `mg_calcium_per_kg` REAL NOT NULL,
+            `mg_iron_per_kg` REAL NOT NULL,
+            `ug_vitamin_a_per_kg` REAL NULL,
+            `mg_vitamin_c_per_kg` REAL NULL,
+            `ug_vitamin_d_per_kg` REAL NULL,
+            `mg_vitamin_e_per_kg` REAL NULL,
+            `ug_vitamin_k_per_kg` REAL NULL,
+            `mg_thiamine_per_kg` REAL NULL,
+            `mg_riboflavin_per_kg` REAL NULL,
+            `mg_niacin_per_kg` REAL NULL,
+            `mg_vitamin_b6_per_kg` REAL NULL,
+            `ug_folate_per_kg` REAL NULL,
+            `ug_vitamin_b12_per_kg` REAL NULL,
+            `ug_biotin_per_kg` REAL NULL,
+            `mg_pantothenate_per_kg` REAL NULL,
+            `mg_choline_per_kg` REAL NULL,
+            `mg_phosphorous_per_kg` REAL NULL,
+            `ug_iodide_per_kg` REAL NULL,
+            `mg_magnesium_per_kg` REAL NULL,
+            `mg_zinc_per_kg` REAL NULL,
+            `ug_selenium_per_kg` REAL NULL,
+            `mg_copper_per_kg` REAL NULL,
+            `mg_manganese_per_kg` REAL NULL,
+            `ug_chromium_per_kg` REAL NULL,
+            `ug_molybdenum_per_kg` REAL NULL,
+            `mg_chloride_per_kg` REAL NULL
         );
         """,
         """
@@ -152,11 +198,12 @@ if __name__ == "__main__":
     ]
 
     STORE_IN_MEMORY: bool = False
+    DATABASE_FILE_PATH: str = "C:/Users/onebi/Documents/GitHub/Recipe-Book/database/recipe_book.sqlite3"
 
     if STORE_IN_MEMORY:
         database: Database = Database(":memory:")
     else:
-        database: Database = Database("recipe_book.sqlite3")
+        database: Database = Database(DATABASE_FILE_PATH)
     database.connect()
     for initial_setup_query in initial_setup_queries:
         print(initial_setup_query)
