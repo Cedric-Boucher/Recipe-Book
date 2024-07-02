@@ -113,7 +113,13 @@ class Queries():
                 `mg_manganese_per_kg` REAL NULL,
                 `ug_chromium_per_kg` REAL NULL,
                 `ug_molybdenum_per_kg` REAL NULL,
-                `mg_chloride_per_kg` REAL NULL
+                `mg_chloride_per_kg` REAL NULL,
+                `has_gluten` INT NOT NULL CHECK (has_gluten IN (0, 1)),
+                `is_meat` INT NOT NULL CHECK (is_meat IN (0, 1)),
+                `is_dairy` INT NOT NULL CHECK (is_dairy IN (0, 1)),
+                `is_animal_product` INT NOT NULL CHECK (is_animal_product IN (0, 1)),
+                `is_nut` INT NOT NULL CHECK (is_nut IN (0, 1)),
+                `is_soy` INT NOT NULL CHECK (is_soy IN (0, 1))
             );
         """
 
