@@ -166,6 +166,18 @@ class Queries():
         return query
 
     @staticmethod
+    def create_table_recipe_usage_query() -> Query:
+        query: Query = """
+            CREATE TABLE IF NOT EXISTS `recipe_usage` (
+                `recipe_usage_id` INT NOT NULL PRIMARY KEY,
+                `recipe_id` INT NOT NULL,
+                `datetime` TEXT NOT NULL
+            );
+        """
+
+        return query
+
+    @staticmethod
     def create_table_recipe_groups_recipes_query() -> Query:
         query: Query = """
             CREATE TABLE IF NOT EXISTS `recipe_groups_recipes` (
@@ -281,6 +293,7 @@ class Queries():
             Queries.create_table_instructions_query(),
 
             Queries.create_table_ingredients_query(),
+            Queries.create_table_recipe_usage_query(),
             Queries.create_table_recipe_groups_recipes_query(),
             Queries.create_table_recipes_ingredients_query(),
             Queries.create_table_recipes_tools_query(),
