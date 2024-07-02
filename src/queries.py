@@ -24,7 +24,8 @@ class Queries():
         query: Query = """
             CREATE TABLE IF NOT EXISTS `recipes` (
                 `recipe_id` INT NOT NULL PRIMARY KEY,
-                `name` TEXT NOT NULL UNIQUE
+                `name` TEXT NOT NULL UNIQUE,
+                `required_time_minutes` INT NULL
             );
         """
 
