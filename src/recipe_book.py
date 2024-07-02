@@ -49,6 +49,27 @@ if __name__ == "__main__":
         PRAGMA foreign_keys = ON;
         """,
         """
+        CREATE TABLE IF NOT EXISTS `recipe_groups` (
+            `recipe_group_id` INT NOT NULL PRIMARY KEY,
+            `group_name` TEXT NOT NULL UNIQUE
+        );
+        """,
+        """
+        CREATE TABLE IF NOT EXISTS `recipe_groups_recipes` (
+            `recipe_group_recipes_id` INT NOT NULL PRIMARY KEY,
+            `recipe_group_id` INT NOT NULL,
+            `recipe_id` INT NOT NULL,
+            FOREIGN KEY (`recipe_group_id`)
+            REFERENCES `recipe_groups` (`recipe_group_id`)
+                ON DELETE CASCADE
+                ON UPDATE CASCADE,
+            FOREIGN KEY (`recipe_id`)
+            REFERENCES `recipes` (`recipe_id`)
+                ON DELETE CASCADE
+                ON UPDATE CASCADE
+        );
+        """,
+        """
         CREATE TABLE IF NOT EXISTS `recipes` (
             `recipe_id` INT NOT NULL PRIMARY KEY,
             `name` TEXT NOT NULL UNIQUE
