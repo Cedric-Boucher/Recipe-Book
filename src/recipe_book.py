@@ -44,7 +44,7 @@ class Database:
             self.__connection.close()
 
 if __name__ == "__main__":
-    initial_setup_queries: list[str] = [ # FIXME there is no sqlite way to auto-update datetimes
+    initial_setup_queries: list[str] = [
         """
         PRAGMA foreign_keys = ON;
         """,
@@ -52,8 +52,6 @@ if __name__ == "__main__":
         CREATE TABLE IF NOT EXISTS `recipes` (
             `recipe_id` INT NOT NULL PRIMARY KEY,
             `name` TEXT NOT NULL UNIQUE
-            `datetime_created` INT NOT NULL,
-            `datetime_updated` INT NOT NULL
         );
         """,
         """
@@ -74,12 +72,33 @@ if __name__ == "__main__":
         """
         CREATE TABLE IF NOT EXISTS `ingredients` (
             `ingredient_id` INT NOT NULL PRIMARY KEY,
-            `name` TEXT NOT NULL UNIQUE,
+            `ingredient_type_id` INT NOT NULL,
+            `ingredient_brand_id` INT NOT NULL,
             `nutrition_info_id` INT NOT NULL,
             FOREIGN KEY (`nutrition_info_id`)
             REFERENCES `nutrition_info` (`nutrition_info_id`)
                 ON DELETE CASCADE
+                ON UPDATE CASCADE,
+            FOREIGN KEY (`ingredient_type_id`)
+            REFERENCES `ingredient_types` (`ingredient_type_id`)
+                ON DELETE CASCADE
+                ON UPDATE CASCADE,
+            FOREIGN KEY (`ingredient_brand_id`)
+            REFERENCES `ingredient_brands` (`ingredient_brand_id`)
+                ON DELETE CASCADE
                 ON UPDATE CASCADE
+        );
+        """,
+        """
+        CREATE TABLE IF NOT EXISTS `ingredient_types` (
+            `ingredient_type_id` INT NOT NULL PRIMARY KEY,
+            `ingredient_type` TEXT NOT NULL UNIQUE
+        );
+        """,
+        """
+        CREATE TABLE IF NOT EXISTS `ingredient_brands` (
+            `ingredient_brand_id` INT NOT NULL PRIMARY KEY,
+            `brand_name` TEXT NOT NULL UNIQUE
         );
         """,
         """
@@ -179,6 +198,7 @@ if __name__ == "__main__":
             `recipe_instructions_id` INT NOT NULL PRIMARY KEY,
             `recipe_id` INT NOT NULL,
             `instruction_id` INT NOT NULL,
+            `instruction_number` INT NOT NULL,
             FOREIGN KEY (`recipe_id`)
             REFERENCES `recipes` (`recipe_id`)
                 ON DELETE CASCADE
