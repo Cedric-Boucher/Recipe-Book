@@ -171,7 +171,11 @@ class Queries():
             CREATE TABLE IF NOT EXISTS `recipe_usage` (
                 `recipe_usage_id` INT NOT NULL PRIMARY KEY,
                 `recipe_id` INT NOT NULL,
-                `datetime` TEXT NOT NULL
+                `datetime` TEXT NOT NULL,
+                FOREIGN KEY (`recipe_id`)
+                REFERENCES `recipes` (`recipe_id`)
+                    ON DELETE CASCADE
+                    ON UPDATE CASCADE
             );
         """
 
