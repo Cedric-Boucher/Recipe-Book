@@ -1,7 +1,8 @@
 from database import Database
 from queries import Queries, Query
 
-if __name__ == "__main__":
+
+def main():
     initial_setup_queries: list[Query] = Queries.initial_setup_queries()
 
     STORE_IN_MEMORY: bool = False
@@ -16,3 +17,7 @@ if __name__ == "__main__":
         print(initial_setup_query)
         print(database.run_query(initial_setup_query))
     database.disconnect()
+
+
+if __name__ == "__main__":
+    main()
