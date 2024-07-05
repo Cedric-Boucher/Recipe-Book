@@ -10,11 +10,9 @@ def main():
         database: Database = Database(":memory:")
     else:
         database: Database = Database(config.DATABASE_FILE_PATH)
-    database.connect()
     for initial_setup_query in initial_setup_queries:
         print(initial_setup_query)
         print(database.run_query(initial_setup_query))
-    database.disconnect()
 
 
 if __name__ == "__main__":

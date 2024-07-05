@@ -9,8 +9,12 @@ class Database:
         self.__filename: str = os.path.abspath(filename)
         self.__connection: None | sqlite3.Connection = None
         self.__cursor: None | sqlite3.Cursor = None
+        self.__connect()
 
-    def connect(self) -> None:
+    def __del__(self):
+        self.__disconnect()
+
+    def __connect(self) -> None:
         try:
             self.__connection = sqlite3.connect(self.__filename)
             print("sqlite3 version: {}".format(sqlite3.sqlite_version))
@@ -28,7 +32,7 @@ class Database:
         self.__cursor.execute(query)
         return self.__cursor.fetchall()
 
-    def disconnect(self) -> None:
+    def __disconnect(self) -> None:
         if self.__cursor is not None:
             self.__cursor.close()
         if self.__connection is not None:
