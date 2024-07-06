@@ -24,8 +24,13 @@ class Queries():
         query: Query = """
             CREATE TABLE IF NOT EXISTS `recipes` (
                 `recipe_id` INT NOT NULL PRIMARY KEY,
+                `recipe_group_id` INT NOT NULL,
                 `name` TEXT NOT NULL UNIQUE,
-                `required_time_minutes` INT NULL
+                `required_time_minutes` INT NULL,
+                FOREIGN KEY (`recipe_group_id`)
+                REFERENCES `recipe_groups` (`recipe_group_id`)
+                    ON DELETE CASCADE
+                    ON UPDATE CASCADE
             );
         """
 
@@ -189,26 +194,6 @@ class Queries():
         return query
 
     @staticmethod
-    def create_table_recipe_groups_recipes_query() -> Query:
-        query: Query = """
-            CREATE TABLE IF NOT EXISTS `recipe_groups_recipes` (
-                `recipe_group_recipes_id` INT NOT NULL PRIMARY KEY,
-                `recipe_group_id` INT NOT NULL,
-                `recipe_id` INT NOT NULL,
-                FOREIGN KEY (`recipe_group_id`)
-                REFERENCES `recipe_groups` (`recipe_group_id`)
-                    ON DELETE CASCADE
-                    ON UPDATE CASCADE,
-                FOREIGN KEY (`recipe_id`)
-                REFERENCES `recipes` (`recipe_id`)
-                    ON DELETE CASCADE
-                    ON UPDATE CASCADE
-            );
-        """
-
-        return query
-
-    @staticmethod
     def create_table_recipes_ingredients_query() -> Query:
         query: Query = """
             CREATE TABLE IF NOT EXISTS `recipes_ingredients` (
@@ -305,7 +290,6 @@ class Queries():
 
             Queries.create_table_ingredients_query(),
             Queries.create_table_recipe_usage_query(),
-            Queries.create_table_recipe_groups_recipes_query(),
             Queries.create_table_recipes_ingredients_query(),
             Queries.create_table_recipes_tools_query(),
             Queries.create_table_recipes_pictures_query(),
