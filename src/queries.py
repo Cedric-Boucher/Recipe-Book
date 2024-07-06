@@ -13,7 +13,7 @@ class Queries():
         query: Query = """
             CREATE TABLE IF NOT EXISTS `recipe_groups` (
                 `recipe_group_id` INT NOT NULL PRIMARY KEY,
-                `group_name` TEXT NOT NULL UNIQUE
+                `name` TEXT NOT NULL UNIQUE
             );
         """
 
@@ -63,7 +63,7 @@ class Queries():
         query: Query = """
             CREATE TABLE IF NOT EXISTS `ingredient_brands` (
                 `ingredient_brand_id` INT NOT NULL PRIMARY KEY,
-                `brand_name` TEXT NOT NULL UNIQUE
+                `name` TEXT NOT NULL UNIQUE
             );
         """
 
