@@ -38,16 +38,16 @@ class Database:
         else:
             self.__logger.log("Failed to connect to database")
 
-    def run_query(self, query: Query) -> dict[str, Any]:
+    def run_query(self, query: Query) -> dict[Any, Any]:
         assert (self.__connection is not None)
         assert (self.__cursor is not None)
         self.__logger.log("Running query:\n{query}".format(query = query))
         self.__cursor.execute(query)
         self.__connection.commit()
         self.__logger.log("Query executed, fetching results")
-        results: list[Any] = self.__cursor.fetchall()
+        results: dict[Any, Any] = dict(self.__cursor.fetchall())
         self.__logger.log("Results fetched:\n{results}".format(results = str(results)))
-        return dict(results)
+        return results
 
     def __disconnect(self) -> None:
         self.__logger.log("Disconnecting from database")
