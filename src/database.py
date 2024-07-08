@@ -44,7 +44,7 @@ class Database:
         self.__cursor.execute(query)
         self.__logger.log("Query executed, fetching results")
         results: list[Any] = self.__cursor.fetchall()
-        self.__logger.log("Results fetched")
+        self.__logger.log("Results fetched:\n{results}".format(results = str(results)))
         return results
 
     def __disconnect(self) -> None:
