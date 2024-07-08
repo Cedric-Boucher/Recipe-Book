@@ -13,7 +13,7 @@ class Queries():
     def create_table_recipe_groups_query() -> Query:
         query: Query = """
             CREATE TABLE IF NOT EXISTS `recipe_groups` (
-                `recipe_group_id` INT NOT NULL PRIMARY KEY,
+                `recipe_group_id` INTEGER NOT NULL PRIMARY KEY,
                 `name` TEXT NOT NULL UNIQUE
             );
         """
@@ -24,10 +24,10 @@ class Queries():
     def create_table_recipes_query() -> Query:
         query: Query = """
             CREATE TABLE IF NOT EXISTS `recipes` (
-                `recipe_id` INT NOT NULL PRIMARY KEY,
-                `recipe_group_id` INT NOT NULL,
+                `recipe_id` INTEGER NOT NULL PRIMARY KEY,
+                `recipe_group_id` INTEGER NOT NULL,
                 `name` TEXT NOT NULL UNIQUE,
-                `required_time_minutes` INT NULL,
+                `required_time_minutes` INTEGER NULL,
                 FOREIGN KEY (`recipe_group_id`)
                 REFERENCES `recipe_groups` (`recipe_group_id`)
                     ON DELETE CASCADE
@@ -41,7 +41,7 @@ class Queries():
     def create_table_tools_query() -> Query:
         query: Query = """
             CREATE TABLE IF NOT EXISTS `tools` (
-                `tool_id` INT NOT NULL PRIMARY KEY,
+                `tool_id` INTEGER NOT NULL PRIMARY KEY,
                 `name` TEXT NOT NULL UNIQUE
             );
         """
@@ -52,7 +52,7 @@ class Queries():
     def create_table_ingredient_types_query() -> Query:
         query: Query = """
             CREATE TABLE IF NOT EXISTS `ingredient_types` (
-                `ingredient_type_id` INT NOT NULL PRIMARY KEY,
+                `ingredient_type_id` INTEGER NOT NULL PRIMARY KEY,
                 `ingredient_type` TEXT NOT NULL UNIQUE
             );
         """
@@ -63,7 +63,7 @@ class Queries():
     def create_table_ingredient_brands_query() -> Query:
         query: Query = """
             CREATE TABLE IF NOT EXISTS `ingredient_brands` (
-                `ingredient_brand_id` INT NOT NULL PRIMARY KEY,
+                `ingredient_brand_id` INTEGER NOT NULL PRIMARY KEY,
                 `name` TEXT NOT NULL UNIQUE
             );
         """
@@ -74,9 +74,9 @@ class Queries():
     def create_table_nutrition_info_query() -> Query:
         query: Query = """
             CREATE TABLE IF NOT EXISTS `nutrition_info` (
-                `nutrition_info_id` INT NOT NULL PRIMARY KEY,
+                `nutrition_info_id` INTEGER NOT NULL PRIMARY KEY,
                 `l_per_kg` REAL NOT NULL,
-                `kilocalories_per_kg` INT NOT NULL,
+                `kilocalories_per_kg` INTEGER NOT NULL,
                 `g_fat_per_kg` REAL NOT NULL,
                 `g_saturated_fat_per_kg` REAL NOT NULL,
                 `g_trans_fat_per_kg` REAL NOT NULL,
@@ -120,12 +120,12 @@ class Queries():
                 `ug_chromium_per_kg` REAL NULL,
                 `ug_molybdenum_per_kg` REAL NULL,
                 `mg_chloride_per_kg` REAL NULL,
-                `has_gluten` INT NOT NULL CHECK (has_gluten IN (0, 1)),
-                `is_meat` INT NOT NULL CHECK (is_meat IN (0, 1)),
-                `is_dairy` INT NOT NULL CHECK (is_dairy IN (0, 1)),
-                `is_animal_product` INT NOT NULL CHECK (is_animal_product IN (0, 1)),
-                `is_nut` INT NOT NULL CHECK (is_nut IN (0, 1)),
-                `is_soy` INT NOT NULL CHECK (is_soy IN (0, 1))
+                `has_gluten` INTEGER NOT NULL CHECK (has_gluten IN (0, 1)),
+                `is_meat` INTEGER NOT NULL CHECK (is_meat IN (0, 1)),
+                `is_dairy` INTEGER NOT NULL CHECK (is_dairy IN (0, 1)),
+                `is_animal_product` INTEGER NOT NULL CHECK (is_animal_product IN (0, 1)),
+                `is_nut` INTEGER NOT NULL CHECK (is_nut IN (0, 1)),
+                `is_soy` INTEGER NOT NULL CHECK (is_soy IN (0, 1))
             );
         """
 
@@ -135,7 +135,7 @@ class Queries():
     def create_table_pictures_query() -> Query:
         query: Query = """
             CREATE TABLE IF NOT EXISTS `pictures` (
-                `picture_id` INT NOT NULL PRIMARY KEY,
+                `picture_id` INTEGER NOT NULL PRIMARY KEY,
                 `picture` BLOB NOT NULL
             );
         """
@@ -146,7 +146,7 @@ class Queries():
     def create_table_instructions_query() -> Query:
         query: Query = """
             CREATE TABLE IF NOT EXISTS `instructions` (
-                `instruction_id` INT NOT NULL PRIMARY KEY,
+                `instruction_id` INTEGER NOT NULL PRIMARY KEY,
                 `instruction` TEXT NOT NULL
             );
         """
@@ -157,10 +157,10 @@ class Queries():
     def create_table_ingredients_query() -> Query:
         query: Query = """
             CREATE TABLE IF NOT EXISTS `ingredients` (
-                `ingredient_id` INT NOT NULL PRIMARY KEY,
-                `ingredient_type_id` INT NOT NULL,
-                `ingredient_brand_id` INT NOT NULL,
-                `nutrition_info_id` INT NOT NULL,
+                `ingredient_id` INTEGER NOT NULL PRIMARY KEY,
+                `ingredient_type_id` INTEGER NOT NULL,
+                `ingredient_brand_id` INTEGER NOT NULL,
+                `nutrition_info_id` INTEGER NOT NULL,
                 FOREIGN KEY (`nutrition_info_id`)
                 REFERENCES `nutrition_info` (`nutrition_info_id`)
                     ON DELETE CASCADE
@@ -182,8 +182,8 @@ class Queries():
     def create_table_recipe_usage_query() -> Query:
         query: Query = """
             CREATE TABLE IF NOT EXISTS `recipe_usage` (
-                `recipe_usage_id` INT NOT NULL PRIMARY KEY,
-                `recipe_id` INT NOT NULL,
+                `recipe_usage_id` INTEGER NOT NULL PRIMARY KEY,
+                `recipe_id` INTEGER NOT NULL,
                 `datetime` TEXT NOT NULL,
                 FOREIGN KEY (`recipe_id`)
                 REFERENCES `recipes` (`recipe_id`)
@@ -198,9 +198,9 @@ class Queries():
     def create_table_recipes_ingredients_query() -> Query:
         query: Query = """
             CREATE TABLE IF NOT EXISTS `recipes_ingredients` (
-                `recipe_ingredients_id` INT NOT NULL PRIMARY KEY,
-                `recipe_id` INT NOT NULL,
-                `ingredient_id` INT NOT NULL,
+                `recipe_ingredients_id` INTEGER NOT NULL PRIMARY KEY,
+                `recipe_id` INTEGER NOT NULL,
+                `ingredient_id` INTEGER NOT NULL,
                 FOREIGN KEY (`recipe_id`)
                 REFERENCES `recipes` (`recipe_id`)
                     ON DELETE CASCADE
@@ -218,9 +218,9 @@ class Queries():
     def create_table_recipes_tools_query() -> Query:
         query: Query = """
             CREATE TABLE IF NOT EXISTS `recipes_tools` (
-                `recipe_tools_id` INT NOT NULL PRIMARY KEY,
-                `recipe_id` INT NOT NULL,
-                `tool_id` INT NOT NULL,
+                `recipe_tools_id` INTEGER NOT NULL PRIMARY KEY,
+                `recipe_id` INTEGER NOT NULL,
+                `tool_id` INTEGER NOT NULL,
                 FOREIGN KEY (`recipe_id`)
                 REFERENCES `recipes` (`recipe_id`)
                     ON DELETE CASCADE
@@ -238,9 +238,9 @@ class Queries():
     def create_table_recipes_pictures_query() -> Query:
         query: Query = """
             CREATE TABLE IF NOT EXISTS `recipes_pictures` (
-                `recipe_pictures_id` INT NOT NULL PRIMARY KEY,
-                `recipe_id` INT NOT NULL,
-                `picture_id` INT NOT NULL,
+                `recipe_pictures_id` INTEGER NOT NULL PRIMARY KEY,
+                `recipe_id` INTEGER NOT NULL,
+                `picture_id` INTEGER NOT NULL,
                 FOREIGN KEY (`recipe_id`)
                 REFERENCES `recipes` (`recipe_id`)
                     ON DELETE CASCADE
@@ -258,10 +258,10 @@ class Queries():
     def create_table_recipes_instructions_query() -> Query:
         query: Query = """
             CREATE TABLE IF NOT EXISTS `recipes_instructions` (
-                `recipe_instructions_id` INT NOT NULL PRIMARY KEY,
-                `recipe_id` INT NOT NULL,
-                `instruction_id` INT NOT NULL,
-                `instruction_number` INT NOT NULL,
+                `recipe_instructions_id` INTEGER NOT NULL PRIMARY KEY,
+                `recipe_id` INTEGER NOT NULL,
+                `instruction_id` INTEGER NOT NULL,
+                `instruction_number` INTEGER NOT NULL,
                 FOREIGN KEY (`recipe_id`)
                 REFERENCES `recipes` (`recipe_id`)
                     ON DELETE CASCADE
