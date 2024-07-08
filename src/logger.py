@@ -10,7 +10,7 @@ class Logger():
     """
     def __init__(self, log_file_path: str):
         self.__MAX_FILESIZE: int = 10 * 1024 * 1024 # 10MB
-        self.__log_file_path: str = log_file_path
+        self.__log_file_path: str = os.path.abspath(log_file_path)
         self.__create_log_file_if_nonexistant()
 
     def __create_log_file_if_nonexistant(self) -> None:
