@@ -870,3 +870,200 @@ class Queries():
         )
 
         return query
+
+    @staticmethod
+    def get_recipe_groups_query() -> Query:
+        query: Query =  """
+            SELECT
+                `recipe_group_id`,
+                `name`
+            FROM
+                `recipe_groups`;
+        """
+
+        return query
+
+    @staticmethod
+    def get_recipes_query(recipe_group_id: int | None = None) -> Query:
+        assert (isinstance(recipe_group_id, int) or recipe_group_id is None)
+        if (isinstance(recipe_group_id, int)):
+            assert (recipe_group_id > 0)
+        query: Query = """
+            SELECT
+                `recipe_id`,
+                `recipe_group_id`,
+                `name`,
+                `required_time_minutes`
+            FROM
+                `recipes`
+            {where_recipe_group_id};
+        """
+        where_recipe_group_id: Query = ""
+        if (recipe_group_id is not None):
+            where_recipe_group_id = """
+                WHERE
+                    `recipe_group_id` = {recipe_group_id}
+            """.format(recipe_group_id = recipe_group_id)
+        query.format(where_recipe_group_id = where_recipe_group_id)
+
+        return query
+
+    @staticmethod
+    def get_tools_query(recipe_id: int | None = None) -> Query:
+        assert (isinstance(recipe_id, int) or recipe_id is None)
+        if (isinstance(recipe_id, int)):
+            assert (recipe_id > 0)
+        query: Query = """
+            SELECT
+                `tool_id`,
+                `name`
+            FROM
+                `tools`
+            {where_recipe_id};
+        """
+        where_recipe_id: Query = ""
+        if (recipe_id is not None):
+            where_recipe_id = """
+                JOIN
+                    `recipes_tools`
+                ON
+                    `recipes_tools`.`tool_id` = `tools`.`tool_id`
+                WHERE
+                    `recipe_id` = {recipe_id}
+            """.format(
+                recipe_id = recipe_id
+            )
+        query.format(
+            where_recipe_id = where_recipe_id
+        )
+
+        return query
+
+    @staticmethod
+    def get_pictures_query(recipe_id: int | None = None) -> Query:
+        assert (isinstance(recipe_id, int) or recipe_id is None)
+        if (isinstance(recipe_id, int)):
+            assert (recipe_id > 0)
+        query: Query = """
+            SELECT
+                `picture_id`,
+                `picture`
+            FROM
+                `pictures`
+            {where_recipe_id};
+        """
+        where_recipe_id: Query = ""
+        if (recipe_id is not None):
+            where_recipe_id = """
+                JOIN
+                    `recipes_pictures`
+                ON
+                    `recipes_pictures`.`picture_id` = `pictures`.`picture_id`
+                WHERE
+                    `recipe_id` = {recipe_id}
+            """.format(
+                recipe_id = recipe_id
+            )
+        query.format(
+            where_recipe_id = where_recipe_id
+        )
+
+        return query
+
+    @staticmethod
+    def get_instructions_query(recipe_id: int) -> Query:
+        assert (isinstance(recipe_id, int))
+        assert (recipe_id > 0)
+        query: Query = """
+            SELECT
+                `instruction_id`,
+                `instruction`,
+                `instruction_number`
+            FROM
+                `instructions`
+            JOIN
+                `recipes_instructions`
+            ON
+                `recipe_instructions`.`instruction_id` = `instructions`.`instruction_id`
+            WHERE
+                `recipe_id` = {recipe_id};
+        """.format(
+            recipe_id = recipe_id
+        )
+
+        return query
+
+    @staticmethod
+    def get_ingredients_query(recipe_id: int | None = None) -> Query:
+        assert (isinstance(recipe_id, int) or recipe_id is None)
+        if (isinstance(recipe_id, int)):
+            assert (recipe_id > 0)
+        query: Query = """
+            SELECT
+                `ingredient_id`,
+                `ingredient_type_id`,
+                `ingredient_type`,
+                `ingredient_brand_id`,
+                `ingredient_brand`,
+                `nutrition_info_id`,
+                `nutrition_info`.*
+            FROM
+                `ingredients`
+            JOIN
+                `ingredient_types`
+            ON
+                `ingredient_types`.`ingredient_type_id` = `ingredients`.`ingredient_type_id`
+            JOIN
+                `ingredient_brands`
+            ON
+                `ingredient_brands`.`ingredient_brand_id` = `ingredients`.`ingredient_brand_id`
+            JOIN
+                `nutrition_info`
+            ON
+                `nutrition_info`.`nutrition_info_id` = `ingredients`.`nutrition_info_id`
+            {where_recipe_id};
+        """
+        where_recipe_id: Query = ""
+        if (recipe_id is not None):
+            where_recipe_id = """
+                JOIN
+                    `recipes_ingredients`
+                ON
+                    `recipes_ingredients`.`ingredient_id` = `ingredients`.`ingredient_id`
+                WHERE
+                    `recipe_id` = {recipe_id}
+            """.format(
+                recipe_id = recipe_id
+            )
+        query.format(
+            where_recipe_id = where_recipe_id
+        )
+
+        return query
+
+    @staticmethod
+    def get_recipe_usage_query(recipe_id: int | None = None) -> Query:
+        assert (isinstance(recipe_id, int) or recipe_id is None)
+        if (isinstance(recipe_id, int)):
+            assert (recipe_id > 0)
+        query: Query = """
+            SELECT
+                `recipe_usage_id`,
+                `recipe_id`,
+                `datetime`
+            FROM
+                `recipe_usage`
+            {where_recipe_id};
+        """
+        where_recipe_id: Query = ""
+        if (recipe_id is not None):
+            where_recipe_id = """
+                WHERE
+                    `recipe_id` = {recipe_id}
+            """.format(
+                recipe_id = recipe_id
+            )
+        query.format(
+            where_recipe_id = where_recipe_id
+        )
+        return query
