@@ -49,6 +49,12 @@ class Database:
         self.__logger.log("Results fetched:\n{results}".format(results = str(results)))
         return results
 
+    def get_last_row_id(self) -> int | None:
+        assert (self.__connection is not None)
+        assert (self.__cursor is not None)
+        row_id: int | None = self.__cursor.lastrowid
+        return row_id
+
     def __disconnect(self) -> None:
         self.__logger.log("Disconnecting from database")
         if self.__cursor is not None:
