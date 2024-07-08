@@ -904,7 +904,7 @@ class Queries():
                 WHERE
                     `recipe_group_id` = {recipe_group_id}
             """.format(recipe_group_id = recipe_group_id)
-        query.format(where_recipe_group_id = where_recipe_group_id)
+        query = query.format(where_recipe_group_id = where_recipe_group_id)
 
         return query
 
@@ -933,7 +933,7 @@ class Queries():
             """.format(
                 recipe_id = recipe_id
             )
-        query.format(
+        query = query.format(
             where_recipe_id = where_recipe_id
         )
 
@@ -964,7 +964,7 @@ class Queries():
             """.format(
                 recipe_id = recipe_id
             )
-        query.format(
+        query = query.format(
             where_recipe_id = where_recipe_id
         )
 
@@ -1035,7 +1035,7 @@ class Queries():
             """.format(
                 recipe_id = recipe_id
             )
-        query.format(
+        query = query.format(
             where_recipe_id = where_recipe_id
         )
 
@@ -1063,7 +1063,7 @@ class Queries():
             """.format(
                 recipe_id = recipe_id
             )
-        query.format(
+        query = query.format(
             where_recipe_id = where_recipe_id
         )
         return query
