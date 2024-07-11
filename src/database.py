@@ -1,6 +1,4 @@
 import sqlite3
-import apsw.ext
-from typing import Any
 import os
 
 from queries import Query
@@ -46,8 +44,15 @@ class Database:
         self.__cursor.execute(query)
         self.__connection.commit()
         self.__logger.log("Query executed, fetching results")
-        results= self.__cursor.fetchall()
-        self.__logger.log("Results fetched:\n{results}".format(results = str(results)))
+        results: list[sqlite3.Row]= self.__cursor.fetchall()
+        if len(results) > 0:
+            columns: list[str] = results[0].keys()
+            self.__logger.log("Result columns:\n{columns}".format(columns = columns))
+            results_string: str = str()
+            for result in results:
+                results_string += str(list(result))
+                results_string += "\n"
+            self.__logger.log("Results fetched:\n{results}".format(results = results_string))
 
         return results
 
