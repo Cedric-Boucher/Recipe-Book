@@ -77,6 +77,12 @@ class RecipeBook():
 
         return results
 
+    def get_instructions(self) -> list[sqlite3.Row]:
+        query: Query = Queries.get_instructions_query()
+        results: list[sqlite3.Row] = self.__database.run_query(query)
+
+        return results
+
 
 def main():
     recipe_book = RecipeBook()
@@ -116,6 +122,15 @@ def main():
         for picture in pictures:
             print("[")
             [print("{}: {}".format(column, picture[column])) for column in columns]
+            print("]")
+
+    instructions: list[sqlite3.Row] = recipe_book.get_instructions()
+    if len(instructions) > 0:
+        columns: list[str] = instructions[0].keys()
+        print("TOOLS:")
+        for instruction in instructions:
+            print("[")
+            [print("{}: {}".format(column, instruction[column])) for column in columns]
             print("]")
 
 
