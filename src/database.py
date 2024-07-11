@@ -44,7 +44,7 @@ class Database:
         self.__cursor.execute(query)
         self.__connection.commit()
         self.__logger.log("Query executed, fetching results")
-        results: list[sqlite3.Row]= self.__cursor.fetchall()
+        results: list[sqlite3.Row] = self.__cursor.fetchall()
         if len(results) > 0:
             columns: list[str] = results[0].keys()
             self.__logger.log("Result columns:\n{columns}".format(columns = columns))
@@ -55,6 +55,29 @@ class Database:
             self.__logger.log("Results fetched:\n{results}".format(results = results_string))
 
         return results
+
+    def run_query_insert_blob(self, query: Query, blobs: tuple[bytes, ...]) -> list[sqlite3.Row]:
+        assert (self.__connection is not None)
+        assert (self.__cursor is not None)
+        assert (isinstance(blobs, tuple))
+        for blob in blobs:
+            assert (isinstance(blob, bytes))
+        self.__logger.log("Running blobs insert query:\n{query}".format(query = query))
+        self.__cursor.execute(query, blobs)
+        self.__connection.commit()
+        self.__logger.log("Blobs insert query executed, fetching results")
+        results: list[sqlite3.Row] = self.__cursor.fetchall()
+        if len(results) > 0:
+            columns: list[str] = results[0].keys()
+            self.__logger.log("Result columns:\n{columns}".format(columns = columns))
+            results_string: str = str()
+            for result in results:
+                results_string += str(list(result))
+                results_string += "\n"
+            self.__logger.log("Results fetched:\n{results}".format(results = results_string))
+
+        return results
+
 
     def get_last_row_id(self) -> int | None:
         assert (self.__connection is not None)

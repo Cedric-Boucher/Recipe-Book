@@ -677,8 +677,7 @@ class Queries():
         return query
 
     @staticmethod
-    def insert_picture_query(picture: bytes) -> Query:
-        assert (isinstance(picture, bytes))
+    def insert_picture_query() -> Query:
 
         query: Query = """
             INSERT INTO `pictures`
@@ -687,11 +686,9 @@ class Queries():
             )
             VALUES
             (
-                {picture_bytes}
+                (?)
             );
-        """.format(
-            picture_bytes = picture
-        )
+        """
 
         return query
 
