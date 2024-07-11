@@ -968,9 +968,10 @@ class Queries():
         return query
 
     @staticmethod
-    def get_instructions_query(recipe_id: int) -> Query:
-        assert (isinstance(recipe_id, int))
-        assert (recipe_id > 0)
+    def get_instructions_query(recipe_id: int | None = None) -> Query:
+        assert (isinstance(recipe_id, int) or recipe_id is None)
+        if (isinstance(recipe_id, int)):
+            assert (recipe_id > 0)
         query: Query = """
             SELECT
                 `instruction_id`,
@@ -982,10 +983,18 @@ class Queries():
                 `recipes_instructions`
             ON
                 `recipe_instructions`.`instruction_id` = `instructions`.`instruction_id`
-            WHERE
-                `recipe_id` = {recipe_id};
-        """.format(
-            recipe_id = recipe_id
+            {where_recipe_id};
+        """
+        where_recipe_id: Query = ""
+        if (recipe_id is not None):
+            where_recipe_id = """
+                WHERE
+                    `recipe_id` = {recipe_id}
+            """.format(
+                recipe_id = recipe_id
+            )
+        query = query.format(
+            where_recipe_id = where_recipe_id
         )
 
         return query
