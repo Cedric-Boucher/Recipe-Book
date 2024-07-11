@@ -53,6 +53,8 @@ class Database:
                 results_string += str(list(result))
                 results_string += "\n"
             self.__logger.log("Results fetched:\n{results}".format(results = results_string))
+        else:
+            self.__logger.log("No results")
 
         return results
 
@@ -75,6 +77,8 @@ class Database:
                 results_string += str(list(result))
                 results_string += "\n"
             self.__logger.log("Results fetched:\n{results}".format(results = results_string))
+        else:
+            self.__logger.log("No results")
 
         return results
 
