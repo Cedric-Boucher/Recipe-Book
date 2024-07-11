@@ -974,7 +974,7 @@ class Queries():
             assert (recipe_id > 0)
         query: Query = """
             SELECT
-                `recipe_instructions`.`instruction_id`,
+                `instructions`.`instruction_id`,
                 `instruction`,
                 `instruction_number`
             FROM
