@@ -44,6 +44,15 @@ class RecipeBook():
 
         return tool_id
 
+    def insert_picture(self, picture: bytes) -> int:
+        assert (isinstance(picture, bytes))
+        query: Query = Queries.insert_picture_query()
+        self.__database.run_query_insert_blob(query, (picture,))
+        picture_id: int | None = self.__database.get_last_row_id()
+        assert (picture_id is not None)
+
+        return picture_id
+
     def get_recipe_groups(self) -> list[sqlite3.Row]:
         query: Query = Queries.get_recipe_groups_query()
         results: list[sqlite3.Row] = self.__database.run_query(query)
@@ -58,6 +67,12 @@ class RecipeBook():
 
     def get_tools(self) -> list[sqlite3.Row]:
         query: Query = Queries.get_tools_query()
+        results: list[sqlite3.Row] = self.__database.run_query(query)
+
+        return results
+
+    def get_pictures(self) -> list[sqlite3.Row]:
+        query: Query = Queries.get_pictures_query()
         results: list[sqlite3.Row] = self.__database.run_query(query)
 
         return results
@@ -92,6 +107,15 @@ def main():
         for tool in tools:
             print("[")
             [print("{}: {}".format(column, tool[column])) for column in columns]
+            print("]")
+
+    pictures: list[sqlite3.Row] = recipe_book.get_pictures()
+    if pictures is not None:
+        columns: list[str] = pictures[0].keys()
+        print("TOOLS:")
+        for picture in pictures:
+            print("[")
+            [print("{}: {}".format(column, picture[column])) for column in columns]
             print("]")
 
 
