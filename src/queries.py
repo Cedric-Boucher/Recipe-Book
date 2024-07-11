@@ -703,7 +703,7 @@ class Queries():
             )
             VALUES
             (
-                {instruction}
+                "{instruction}"
             );
         """.format(instruction = instruction)
 
@@ -754,7 +754,7 @@ class Queries():
             VALUES
             (
                 {recipe_id},
-                {datetime_used}
+                "{datetime_used}"
             );
         """.format(
             recipe_id = recipe_id,
