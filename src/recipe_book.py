@@ -53,6 +53,15 @@ class RecipeBook():
 
         return picture_id
 
+    def insert_instruction(self, instruction: str) -> int:
+        assert (isinstance(instruction, str))
+        query: Query = Queries.insert_instruction_query(instruction)
+        self.__database.run_query(query)
+        instruction_id: int | None = self.__database.get_last_row_id()
+        assert (instruction_id is not None)
+
+        return instruction_id
+
     def get_recipe_groups(self) -> list[sqlite3.Row]:
         query: Query = Queries.get_recipe_groups_query()
         results: list[sqlite3.Row] = self.__database.run_query(query)
