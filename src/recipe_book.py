@@ -2,6 +2,7 @@ from database import Database, sqlite3
 from queries import Queries, Query
 import config
 
+
 class RecipeBook():
     def __init__(self):
         initial_setup_queries: list[Query] = Queries.initial_setup_queries()
@@ -34,6 +35,15 @@ class RecipeBook():
 
         return recipe_id
 
+    def insert_tool(self, tool_name: str) -> int:
+        assert (isinstance(tool_name, str))
+        query: Query = Queries.insert_tool_query(tool_name)
+        self.__database.run_query(query)
+        tool_id: int | None = self.__database.get_last_row_id()
+        assert (tool_id is not None)
+
+        return tool_id
+
     def get_recipe_groups(self) -> list[sqlite3.Row]:
         query: Query = Queries.get_recipe_groups_query()
         results: list[sqlite3.Row] = self.__database.run_query(query)
@@ -45,6 +55,13 @@ class RecipeBook():
         results: list[sqlite3.Row] = self.__database.run_query(query)
 
         return results
+
+    def get_tools(self) -> list[sqlite3.Row]:
+        query: Query = Queries.get_tools_query()
+        results: list[sqlite3.Row] = self.__database.run_query(query)
+
+        return results
+
 
 def main():
     recipe_book = RecipeBook()
@@ -67,6 +84,16 @@ def main():
             print("[")
             [print("{}: {}".format(column, recipe[column])) for column in columns]
             print("]")
+
+    tools: list[sqlite3.Row] = recipe_book.get_tools()
+    if tools is not None:
+        columns: list[str] = tools[0].keys()
+        print("TOOLS:")
+        for tool in tools:
+            print("[")
+            [print("{}: {}".format(column, tool[column])) for column in columns]
+            print("]")
+
 
 if __name__ == "__main__":
     main()
