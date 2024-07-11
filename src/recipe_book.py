@@ -1,4 +1,4 @@
-from database import Database
+from database import Database, sqlite3
 from queries import Queries, Query
 import config
 
@@ -34,15 +34,15 @@ class RecipeBook():
 
         return recipe_id
 
-    def get_recipe_groups(self):
+    def get_recipe_groups(self) -> list[sqlite3.Row]:
         query: Query = Queries.get_recipe_groups_query()
-        results = self.__database.run_query(query)
+        results: list[sqlite3.Row] = self.__database.run_query(query)
 
         return results
 
-    def get_recipes(self):
+    def get_recipes(self) -> list[sqlite3.Row]:
         query: Query = Queries.get_recipes_query()
-        results = self.__database.run_query(query)
+        results: list[sqlite3.Row] = self.__database.run_query(query)
 
         return results
 
@@ -50,7 +50,7 @@ def main():
     recipe_book = RecipeBook()
     #recipe_group_id = recipe_book.insert_recipe_group("Test Recipe Group")
     #recipe_id = recipe_book.insert_recipe(recipe_group_id, "Test Recipe")
-    recipe_groups = recipe_book.get_recipe_groups()
+    recipe_groups: list[sqlite3.Row] = recipe_book.get_recipe_groups()
     if recipe_groups is not None:
         columns: list[str] = recipe_groups[0].keys()
         print("RECIPE GROUPS:")
@@ -59,7 +59,7 @@ def main():
             [print("{}: {}".format(column, recipe_group[column])) for column in columns]
             print("]")
 
-    recipes = recipe_book.get_recipes()
+    recipes: list[sqlite3.Row] = recipe_book.get_recipes()
     if recipes is not None:
         columns: list[str] = recipes[0].keys()
         print("RECIPES:")
