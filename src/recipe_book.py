@@ -83,7 +83,7 @@ def main():
     #recipe_group_id = recipe_book.insert_recipe_group("Test Recipe Group")
     #recipe_id = recipe_book.insert_recipe(recipe_group_id, "Test Recipe")
     recipe_groups: list[sqlite3.Row] = recipe_book.get_recipe_groups()
-    if recipe_groups is not None:
+    if len(recipe_groups) > 0:
         columns: list[str] = recipe_groups[0].keys()
         print("RECIPE GROUPS:")
         for recipe_group in recipe_groups:
@@ -92,7 +92,7 @@ def main():
             print("]")
 
     recipes: list[sqlite3.Row] = recipe_book.get_recipes()
-    if recipes is not None:
+    if len(recipes) > 0:
         columns: list[str] = recipes[0].keys()
         print("RECIPES:")
         for recipe in recipes:
@@ -101,7 +101,7 @@ def main():
             print("]")
 
     tools: list[sqlite3.Row] = recipe_book.get_tools()
-    if tools is not None:
+    if len(tools) > 0:
         columns: list[str] = tools[0].keys()
         print("TOOLS:")
         for tool in tools:
@@ -110,7 +110,7 @@ def main():
             print("]")
 
     pictures: list[sqlite3.Row] = recipe_book.get_pictures()
-    if pictures is not None:
+    if len(pictures) > 0:
         columns: list[str] = pictures[0].keys()
         print("TOOLS:")
         for picture in pictures:
