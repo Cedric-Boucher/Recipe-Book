@@ -982,7 +982,7 @@ class Queries():
             JOIN
                 `recipes_instructions`
             ON
-                `recipe_instructions`.`instruction_id` = `instructions`.`instruction_id`
+                `recipes_instructions`.`instruction_id` = `instructions`.`instruction_id`
             {where_recipe_id};
         """
         where_recipe_id: Query = ""
