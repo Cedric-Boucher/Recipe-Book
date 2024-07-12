@@ -158,6 +158,7 @@ class Queries():
         query: Query = """
             CREATE TABLE IF NOT EXISTS `ingredients` (
                 `ingredient_id` INTEGER NOT NULL PRIMARY KEY,
+                `name` TEXT NOT NULL,
                 `ingredient_type_id` INTEGER NOT NULL,
                 `ingredient_brand_id` INTEGER NOT NULL,
                 `nutrition_info_id` INTEGER NOT NULL,
@@ -695,6 +696,7 @@ class Queries():
     @staticmethod
     def insert_instruction_query(instruction: str) -> Query:
         assert (isinstance(instruction, str))
+        instruction = instruction.replace('"', "")
 
         query: Query = """
             INSERT INTO `instructions`
@@ -710,13 +712,15 @@ class Queries():
         return query
 
     @staticmethod
-    def insert_ingredient_query(ingredient_type_id: int, ingredient_brand_id: int, nutrition_info_id: int) -> Query:
+    def insert_ingredient_query(ingredient_type_id: int, ingredient_brand_id: int, nutrition_info_id: int, ingredient_name: str) -> Query:
         assert (isinstance(ingredient_type_id, int))
         assert (ingredient_type_id > 0)
         assert (isinstance(ingredient_brand_id, int))
         assert (ingredient_brand_id > 0)
         assert (isinstance(nutrition_info_id, int))
         assert (nutrition_info_id > 0)
+        assert (isinstance(ingredient_name, str))
+        ingredient_name = ingredient_name.replace('"', "")
 
         query: Query = """
             INSERT INTO `ingredients`
@@ -1007,6 +1011,7 @@ class Queries():
         query: Query = """
             SELECT
                 `ingredient_id`,
+                `name`,
                 `ingredient_type_id`,
                 `ingredient_type`,
                 `ingredient_brand_id`,
