@@ -89,6 +89,15 @@ class RecipeBook():
 
         return ingredient_type_id
 
+    def insert_ingredient_brand(self, ingredient_brand_name: str) -> int:
+        assert (isinstance(ingredient_brand_name, str))
+        query: Query = Queries.insert_ingredient_type_query(ingredient_brand_name)
+        self.__database.run_query(query)
+        ingredient_brand_id: int | None = self.__database.get_last_row_id()
+        assert (ingredient_brand_id is not None)
+
+        return ingredient_brand_id
+
     def get_recipe_groups(self) -> list[sqlite3.Row]:
         query: Query = Queries.get_recipe_groups_query()
         results: list[sqlite3.Row] = self.__database.run_query(query)
