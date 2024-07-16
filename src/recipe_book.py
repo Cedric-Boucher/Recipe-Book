@@ -1,5 +1,6 @@
 from database import Database, sqlite3
 from queries import Queries, Query
+from nutrition_info import Nutrition_Info
 import config
 
 
@@ -98,6 +99,67 @@ class RecipeBook():
 
         return ingredient_brand_id
 
+    def insert_nutrition_info(self, nutrition_info: Nutrition_Info) -> int:
+        assert (isinstance(nutrition_info, Nutrition_Info))
+        query: Query = Queries.insert_nutrition_info_query(
+                nutrition_info.litres_per_kilogram,
+                nutrition_info.kilocalories_per_kilogram,
+                nutrition_info.grams_of_fat_per_kilogram,
+                nutrition_info.grams_of_saturated_fat_per_kilogram,
+                nutrition_info.grams_of_trans_fat_per_kilogram,
+                nutrition_info.grams_of_carbohydrate_per_kilogram,
+                nutrition_info.grams_of_dietary_fibre_per_kilogram,
+                nutrition_info.grams_of_sugars_per_kilogram,
+                nutrition_info.grams_of_protein_per_kilogram,
+                nutrition_info.grams_of_cholesterol_per_kilogram,
+                nutrition_info.milligrams_of_sodium_per_kilogram,
+                nutrition_info.milligrams_of_potassium_per_kilogram,
+                nutrition_info.milligrams_of_calcium_per_kilogram,
+                nutrition_info.milligrams_of_iron_per_kilogram,
+                nutrition_info.has_gluten,
+                nutrition_info.is_meat,
+                nutrition_info.is_dairy,
+                nutrition_info.is_animal_product,
+                nutrition_info.is_nut,
+                nutrition_info.is_soy,
+                nutrition_info.grams_of_omega6_polyunsaturated_fat_per_kilogram,
+                nutrition_info.grams_of_omega3_polyunsaturated_fat_per_kilogram,
+                nutrition_info.grams_of_monounsaturated_fat_per_kilogram,
+                nutrition_info.grams_of_soluble_fibre_per_kilogram,
+                nutrition_info.grams_of_insoluble_fibre_per_kilogram,
+                nutrition_info.grams_of_sugar_alcohols_per_kilogram,
+                nutrition_info.grams_of_starch_per_kilogram,
+                nutrition_info.micrograms_of_vitamin_a_per_kilogram,
+                nutrition_info.milligrams_of_vitamin_c_per_kilogram,
+                nutrition_info.micrograms_of_vitamin_d_per_kilogram,
+                nutrition_info.milligrams_of_vitamin_e_per_kilogram,
+                nutrition_info.micrograms_of_vitamin_k_per_kilogram,
+                nutrition_info.milligrams_of_thiamine_per_kilogram,
+                nutrition_info.milligrams_of_riboflavin_per_kilogram,
+                nutrition_info.milligrams_of_niacin_per_kilogram,
+                nutrition_info.milligrams_of_vitamin_b6_per_kilogram,
+                nutrition_info.micrograms_of_folate_per_kilogram,
+                nutrition_info.micrograms_of_vitamin_b12_per_kilogram,
+                nutrition_info.micrograms_of_biotin_per_kilogram,
+                nutrition_info.milligrams_of_pantothenate_per_kilogram,
+                nutrition_info.milligrams_of_choline_per_kilogram,
+                nutrition_info.milligrams_of_phosphorous_per_kilogram,
+                nutrition_info.micrograms_of_iodide_per_kilograms,
+                nutrition_info.milligrams_of_magnesium_per_kilogram,
+                nutrition_info.milligrams_of_zinc_per_kilogram,
+                nutrition_info.micrograms_of_selenium_per_kilogram,
+                nutrition_info.milligrams_of_copper_per_kilogram,
+                nutrition_info.milligrams_of_manganese_per_kilogram,
+                nutrition_info.micrograms_of_chromium_per_kilogram,
+                nutrition_info.micrograms_of_molybdenum_per_kilogram,
+                nutrition_info.milligrams_of_chloride_per_kilogram
+        )
+        self.__database.run_query(query)
+        nutrition_info_id: int | None = self.__database.get_last_row_id()
+        assert (nutrition_info_id is not None)
+
+        return nutrition_info_id
+
     def get_recipe_groups(self) -> list[sqlite3.Row]:
         query: Query = Queries.get_recipe_groups_query()
         results: list[sqlite3.Row] = self.__database.run_query(query)
@@ -137,8 +199,36 @@ class RecipeBook():
 
 def main():
     recipe_book = RecipeBook()
-    #recipe_group_id = recipe_book.insert_recipe_group("Test Recipe Group")
-    #recipe_id = recipe_book.insert_recipe(recipe_group_id, "Test Recipe")
+    recipe_group_id = recipe_book.insert_recipe_group("Test Recipe Group")
+    recipe_id = recipe_book.insert_recipe(recipe_group_id, "Test Recipe")
+    recipe_book.insert_tool("Test Tool")
+    recipe_book.insert_picture(bytes(range(64)))
+    recipe_book.insert_instruction("Test Instruction")
+    ingredient_type_id = recipe_book.insert_ingredient_type("Test Ingredient Type")
+    ingredient_brand_id = recipe_book.insert_ingredient_brand("Test Ingredient Brand")
+    nutrition_info_id = recipe_book.insert_nutrition_info(Nutrition_Info(
+        0.0,
+        0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False
+    ))
+    recipe_book.insert_ingredient(ingredient_type_id, ingredient_brand_id, nutrition_info_id)
     recipe_groups: list[sqlite3.Row] = recipe_book.get_recipe_groups()
     if len(recipe_groups) > 0:
         columns: list[str] = recipe_groups[0].keys()
