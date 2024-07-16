@@ -15,6 +15,10 @@ class RecipeBook():
         for initial_setup_query in initial_setup_queries:
             self.__database.run_query(initial_setup_query)
 
+    # TODO make some bigger functions to do multiple things in one go:
+    # TODO insert recipe, pictures, instructions, connect ingredients, tools
+    # TODO insert ingredient, connect brand, type, nutrition info
+
     def insert_recipe_group(self, group_name: str) -> int:
         assert (isinstance(group_name, str))
         query: Query = Queries.insert_recipe_group_query(group_name)
