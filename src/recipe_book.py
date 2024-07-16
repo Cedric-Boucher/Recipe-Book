@@ -66,6 +66,20 @@ class RecipeBook():
 
         return instruction_id
 
+    def insert_ingredient(self, ingredient_type_id: int, ingredient_brand_id: int, nutrition_info_id: int) -> int:
+        assert (isinstance(ingredient_type_id, int))
+        assert (ingredient_type_id > 0)
+        assert (isinstance(ingredient_brand_id, int))
+        assert (ingredient_brand_id > 0)
+        assert (isinstance(nutrition_info_id, int))
+        assert (nutrition_info_id > 0)
+        query: Query = Queries.insert_ingredient_query(ingredient_type_id, ingredient_brand_id, nutrition_info_id)
+        self.__database.run_query(query)
+        ingredient_id: int | None = self.__database.get_last_row_id()
+        assert (ingredient_id is not None)
+
+        return ingredient_id
+
     def get_recipe_groups(self) -> list[sqlite3.Row]:
         query: Query = Queries.get_recipe_groups_query()
         results: list[sqlite3.Row] = self.__database.run_query(query)
@@ -92,6 +106,12 @@ class RecipeBook():
 
     def get_instructions(self) -> list[sqlite3.Row]:
         query: Query = Queries.get_instructions_query()
+        results: list[sqlite3.Row] = self.__database.run_query(query)
+
+        return results
+
+    def get_ingredient(self) -> list[sqlite3.Row]:
+        query: Query = Queries.get_ingredients_query()
         results: list[sqlite3.Row] = self.__database.run_query(query)
 
         return results
