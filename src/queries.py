@@ -201,6 +201,7 @@ class Queries():
                 `recipe_ingredients_id` INTEGER NOT NULL PRIMARY KEY,
                 `recipe_id` INTEGER NOT NULL,
                 `ingredient_id` INTEGER NOT NULL,
+                `amount_g` INTEGER NOT NULL,
                 FOREIGN KEY (`recipe_id`)
                 REFERENCES `recipes` (`recipe_id`)
                     ON DELETE CASCADE
@@ -764,26 +765,31 @@ class Queries():
         return query
 
     @staticmethod
-    def insert_recipe_ingredient_query(recipe_id: int, ingredient_id: int) -> Query:
+    def insert_recipe_ingredient_query(recipe_id: int, ingredient_id: int, amount_grams: int) -> Query:
         assert (isinstance(recipe_id, int))
         assert (recipe_id > 0)
         assert (isinstance(ingredient_id, int))
         assert (ingredient_id > 0)
+        assert (isinstance(amount_grams, int))
+        assert (amount_grams > 0)
 
         query: Query = """
             INSERT INTO `recipes_ingredients`
             (
                 `recipe_id`,
-                `ingredient_id`
+                `ingredient_id`,
+                `amount_g`
             )
             VALUES
             (
                 {recipe_id},
-                {ingredient_id}
+                {ingredient_id},
+                {amount_grams}
             );
         """.format(
             recipe_id = recipe_id,
-            ingredient_id = ingredient_id
+            ingredient_id = ingredient_id,
+            amount_grams = amount_grams
         )
 
         return query
@@ -1007,6 +1013,7 @@ class Queries():
         query: Query = """
             SELECT
                 `ingredient_id`,
+                {amount_grams}
                 `ingredient_type_id`,
                 `ingredient_type`,
                 `ingredient_brand_id`,
@@ -1042,6 +1049,7 @@ class Queries():
                 recipe_id = recipe_id
             )
         query = query.format(
+            amount_grams = ("" if recipe_id is None else "`amount_g`,"),
             where_recipe_id = where_recipe_id
         )
 
