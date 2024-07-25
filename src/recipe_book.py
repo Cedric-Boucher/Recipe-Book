@@ -18,7 +18,9 @@ class RecipeBook():
 
     # TODO make some bigger functions to do multiple things in one go:
     # TODO insert recipe, pictures, instructions, connect ingredients, tools
-    # TODO insert ingredient, connect brand, type, nutrition info
+
+    def create_recipe(self, recipe_name: str, pictures: list[bytes], instructions: list[str], ingredient_ids_and_amounts: list[tuple[int, int]], tool_ids: list[int]):
+        pass
 
     def insert_recipe_group(self, group_name: str) -> int:
         assert (isinstance(group_name, str))
