@@ -1081,3 +1081,70 @@ class Queries():
             where_recipe_id = where_recipe_id
         )
         return query
+
+    @staticmethod
+    def get_all_recipe_information_query(recipe_id: int) -> Query:
+        assert (isinstance(recipe_id, int))
+        assert (recipe_id > 0)
+        # FIXME custom set selected columns and name "name" columns properly
+        query: Query = """
+            SELECT
+                *
+            FROM
+                `recipes`
+            LEFT JOIN
+                `recipe_groups`
+            ON
+                `recipes`.`recipe_group_id` = `recipe_groups`.`recipe_group_id`
+            LEFT JOIN
+                `recipes_tools`
+            ON
+                `recipes`.`recipe_id` = `recipes_tools`.`recipe_id`
+            LEFT JOIN
+                `tools`
+            ON
+                `recipes_tools`.`tool_id` = `tools`.`tool_id`
+            LEFT JOIN
+                `recipes_ingredients`
+            ON
+                `recipes`.`recipe_id` = `recipes_ingredients`.`recipe_id`
+            LEFT JOIN
+                `ingredients`
+            ON
+                `recipes_ingredients`.`ingredient_id` = `ingredients`.`ingredient_id`
+            LEFT JOIN
+                `ingredient_types`
+            ON
+                `ingredients`.`ingredient_type_id` = `ingredient_types`.`ingredient_type_id`
+            LEFT JOIN
+                `ingredient_brands`
+            ON
+                `ingredients`.`ingredient_brand_id` = `ingredient_brands`.`ingredient_brand_id`
+            LEFT JOIN
+                `nutrition_info`
+            ON
+                `ingredients`.`nutrition_info_id` = `nutrition_info`.`nutrition_info_id`
+            LEFT JOIN
+                `recipes_pictures`
+            ON
+                `recipes`.`recipe_id` = `recipes_pictures`.`recipe_id`
+            LEFT JOIN
+                `pictures`
+            ON
+                `recipes_pictures`.`picture_id` = `pictures`.`picture_id`
+            LEFT JOIN
+                `recipes_instructions`
+            ON
+                `recipes`.`recipe_id` = `recipes_instructions`.`recipe_id`
+            LEFT JOIN
+                `instructions`
+            ON
+                `recipes_instructions`.`instruction_id` = `instructions`.`instruction_id`
+            LEFT JOIN
+                `recipe_usage`
+            ON
+                `recipes`.`recipe_id` = `recipe_usage`.`recipe_id`
+            WHERE
+                `recipes`.`recipe_id` = {recipe_id}
+            """.format(recipe_id = recipe_id)
+        return query

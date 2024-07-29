@@ -17,10 +17,32 @@ class RecipeBook():
             self.__database.run_query(initial_setup_query)
 
     # TODO make some bigger functions to do multiple things in one go:
-    # TODO insert recipe, pictures, instructions, connect ingredients, tools
+    # TODO create smarter code that will do EVERYTHING in one function, insert things if necessary otherwise link existing
 
-    def create_recipe(self, recipe_name: str, pictures: list[bytes], instructions: list[str], ingredient_ids_and_amounts: list[tuple[int, int]], tool_ids: list[int]):
-        pass
+    def create_recipe(
+            self,
+            recipe_group_id: int,
+            recipe_name: str,
+            pictures: list[bytes],
+            instructions: list[str],
+            ingredient_ids_and_amounts: list[tuple[int, int]],
+            tool_ids: list[int]
+        ) -> int:
+        recipe_id: int = self.__insert_recipe(recipe_group_id, recipe_name)
+        for picture in pictures:
+            picture_id: int = self.__insert_picture(picture)
+            self.__link_picture_to_recipe(recipe_id, picture_id)
+        for instruction_number, instruction in enumerate(instructions):
+            instruction_id: int = self.__insert_instruction(instruction)
+            self.__link_instruction_to_recipe(recipe_id, instruction_id, instruction_number+1)
+        for ingredient_id_and_amount in ingredient_ids_and_amounts:
+            ingredient_id: int = ingredient_id_and_amount[0]
+            ingredient_amount: int = ingredient_id_and_amount[1]
+            self.__link_ingredient_to_recipe(recipe_id, ingredient_id, ingredient_amount)
+        for tool_id in tool_ids:
+            self.__link_tool_to_recipe(recipe_id, tool_id)
+
+        return recipe_id
 
     def insert_recipe_group(self, group_name: str) -> int:
         assert (isinstance(group_name, str))
@@ -31,7 +53,7 @@ class RecipeBook():
 
         return recipe_group_id
 
-    def insert_recipe(self, recipe_group_id: int, recipe_name: str) -> int:
+    def __insert_recipe(self, recipe_group_id: int, recipe_name: str) -> int:
         assert (isinstance(recipe_group_id, int))
         assert (recipe_group_id > 0)
         assert (isinstance(recipe_name, str))
@@ -51,7 +73,7 @@ class RecipeBook():
 
         return tool_id
 
-    def insert_picture(self, picture: bytes) -> int:
+    def __insert_picture(self, picture: bytes) -> int:
         assert (isinstance(picture, bytes))
         query: Query = Queries.insert_picture_query()
         self.__database.run_query_insert_blob(query, (picture,))
@@ -60,7 +82,7 @@ class RecipeBook():
 
         return picture_id
 
-    def insert_instruction(self, instruction: str) -> int:
+    def __insert_instruction(self, instruction: str) -> int:
         assert (isinstance(instruction, str))
         query: Query = Queries.insert_instruction_query(instruction)
         self.__database.run_query(query)
@@ -162,6 +184,58 @@ class RecipeBook():
 
         return nutrition_info_id
 
+    def __link_ingredient_to_recipe(self, recipe_id: int, ingredient_id: int, amount_grams: int) -> int:
+        assert (isinstance(ingredient_id, int))
+        assert (ingredient_id > 0)
+        assert (isinstance(recipe_id, int))
+        assert (recipe_id > 0)
+        assert (isinstance(amount_grams, int))
+        assert (amount_grams > 0)
+        query: Query = Queries.insert_recipe_ingredient_query(recipe_id, ingredient_id, amount_grams)
+        self.__database.run_query(query)
+        recipe_ingredient_id: int | None = self.__database.get_last_row_id()
+        assert (recipe_ingredient_id is not None)
+
+        return recipe_ingredient_id
+
+    def __link_instruction_to_recipe(self, recipe_id: int, instruction_id: int, instruction_number: int) -> int:
+        assert (isinstance(recipe_id, int))
+        assert (recipe_id > 0)
+        assert (isinstance(instruction_id, int))
+        assert (instruction_id > 0)
+        assert (isinstance(instruction_number, int))
+        assert (instruction_number > 0)
+        query: Query = Queries.insert_recipe_instruction_query(recipe_id, instruction_id, instruction_number)
+        self.__database.run_query(query)
+        recipe_instruction_id: int | None = self.__database.get_last_row_id()
+        assert (recipe_instruction_id is not None)
+
+        return recipe_instruction_id
+
+    def __link_picture_to_recipe(self, recipe_id: int, picture_id: int) -> int:
+        assert (isinstance(recipe_id, int))
+        assert (recipe_id > 0)
+        assert (isinstance(picture_id, int))
+        assert (picture_id > 0)
+        query: Query = Queries.insert_recipe_picture_query(recipe_id, picture_id)
+        self.__database.run_query(query)
+        recipe_picture_id: int | None = self.__database.get_last_row_id()
+        assert (recipe_picture_id is not None)
+
+        return recipe_picture_id
+
+    def __link_tool_to_recipe(self, recipe_id: int, tool_id: int) -> int:
+        assert (isinstance(recipe_id, int))
+        assert (recipe_id > 0)
+        assert (isinstance(tool_id, int))
+        assert (tool_id > 0)
+        query: Query = Queries.insert_recipe_tool_query(recipe_id, tool_id)
+        self.__database.run_query(query)
+        recipe_tool_id: int | None = self.__database.get_last_row_id()
+        assert (recipe_tool_id is not None)
+
+        return recipe_tool_id
+
     def get_recipe_groups(self) -> list[sqlite3.Row]:
         query: Query = Queries.get_recipe_groups_query()
         results: list[sqlite3.Row] = self.__database.run_query(query)
@@ -198,14 +272,19 @@ class RecipeBook():
 
         return results
 
+    def get_all_recipe_information(self, recipe_id: int) -> list[sqlite3.Row]:
+        assert (isinstance(recipe_id, int))
+        assert (recipe_id > 0)
+        query: Query = Queries.get_all_recipe_information_query(recipe_id)
+        results: list[sqlite3.Row] = self.__database.run_query(query)
+
+        return results
+
 
 def main():
     recipe_book = RecipeBook()
     recipe_group_id = recipe_book.insert_recipe_group("Test Recipe Group")
-    recipe_id = recipe_book.insert_recipe(recipe_group_id, "Test Recipe")
-    recipe_book.insert_tool("Test Tool")
-    recipe_book.insert_picture(bytes(range(64)))
-    recipe_book.insert_instruction("Test Instruction")
+    tool_id = recipe_book.insert_tool("Test Tool")
     ingredient_type_id = recipe_book.insert_ingredient_type("Test Ingredient Type")
     ingredient_brand_id = recipe_book.insert_ingredient_brand("Test Ingredient Brand")
     nutrition_info_id = recipe_book.insert_nutrition_info(Nutrition_Info(
@@ -230,7 +309,8 @@ def main():
         False,
         False
     ))
-    recipe_book.insert_ingredient(ingredient_type_id, ingredient_brand_id, nutrition_info_id)
+    ingredient_id = recipe_book.insert_ingredient(ingredient_type_id, ingredient_brand_id, nutrition_info_id)
+    recipe_id = recipe_book.create_recipe(recipe_group_id, "Test Recipe", [bytes(range(64))], ["Test Instruction"], [(ingredient_id, 1)], [tool_id])
     recipe_groups: list[sqlite3.Row] = recipe_book.get_recipe_groups()
     if len(recipe_groups) > 0:
         columns: list[str] = recipe_groups[0].keys()
@@ -275,6 +355,9 @@ def main():
             print("[")
             [print("{}: {}".format(column, instruction[column])) for column in columns]
             print("]")
+
+    everything = recipe_book.get_all_recipe_information(recipe_id)
+    print(everything)
 
 
 if __name__ == "__main__":
