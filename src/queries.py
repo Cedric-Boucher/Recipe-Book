@@ -845,7 +845,7 @@ class Queries():
         return query
 
     @staticmethod
-    def insert_recipe_instruction(recipe_id: int, instruction_id: int, instruction_number: int) -> Query:
+    def insert_recipe_instruction_query(recipe_id: int, instruction_id: int, instruction_number: int) -> Query:
         assert (isinstance(recipe_id, int))
         assert (recipe_id > 0)
         assert (isinstance(instruction_id, int))
