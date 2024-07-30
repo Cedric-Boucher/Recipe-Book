@@ -19,6 +19,10 @@ class RecipeBook():
     # TODO make some bigger functions to do multiple things in one go:
     # TODO create smarter code that will do EVERYTHING in one function, insert things if necessary otherwise link existing
 
+    # using something in (recipe_group, tool, ingredient, ingredient_brand, ingredient_type)
+    # should be a dropdown selection for users so they are incentivized to use existing options,
+    # with a way to create a new one if needed
+
     def create_recipe(
             self,
             recipe_group_id: int,
@@ -27,7 +31,7 @@ class RecipeBook():
             instructions: list[str],
             ingredient_ids_and_amounts: list[tuple[int, int]],
             tool_ids: list[int]
-        ) -> int:
+    ) -> int:
         recipe_id: int = self.__insert_recipe(recipe_group_id, recipe_name)
         for picture in pictures:
             picture_id: int = self.__insert_picture(picture)
@@ -43,6 +47,18 @@ class RecipeBook():
             self.__link_tool_to_recipe(recipe_id, tool_id)
 
         return recipe_id
+
+    def create_ingredient(
+            self,
+            ingredient_type_id: int,
+            ingredient_brand_id: int,
+            nutrition_info: Nutrition_Info
+    ) -> int:
+        nutrition_info_id: int = self.__insert_nutrition_info(nutrition_info)
+        ingredient_id: int = self.__insert_ingredient(ingredient_type_id, ingredient_brand_id, nutrition_info_id)
+
+        return ingredient_id
+
 
     def insert_recipe_group(self, group_name: str) -> int:
         assert (isinstance(group_name, str))
@@ -91,7 +107,7 @@ class RecipeBook():
 
         return instruction_id
 
-    def insert_ingredient(self, ingredient_type_id: int, ingredient_brand_id: int, nutrition_info_id: int) -> int:
+    def __insert_ingredient(self, ingredient_type_id: int, ingredient_brand_id: int, nutrition_info_id: int) -> int:
         assert (isinstance(ingredient_type_id, int))
         assert (ingredient_type_id > 0)
         assert (isinstance(ingredient_brand_id, int))
@@ -123,7 +139,7 @@ class RecipeBook():
 
         return ingredient_brand_id
 
-    def insert_nutrition_info(self, nutrition_info: Nutrition_Info) -> int:
+    def __insert_nutrition_info(self, nutrition_info: Nutrition_Info) -> int:
         assert (isinstance(nutrition_info, Nutrition_Info))
         query: Query = Queries.insert_nutrition_info_query(
                 nutrition_info.litres_per_kilogram,
@@ -287,29 +303,32 @@ def main():
     tool_id = recipe_book.insert_tool("Test Tool")
     ingredient_type_id = recipe_book.insert_ingredient_type("Test Ingredient Type")
     ingredient_brand_id = recipe_book.insert_ingredient_brand("Test Ingredient Brand")
-    nutrition_info_id = recipe_book.insert_nutrition_info(Nutrition_Info(
-        0.0,
-        0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        0.0,
-        False,
-        False,
-        False,
-        False,
-        False,
-        False
-    ))
-    ingredient_id = recipe_book.insert_ingredient(ingredient_type_id, ingredient_brand_id, nutrition_info_id)
+    ingredient_id = recipe_book.create_ingredient(
+        ingredient_type_id,
+        ingredient_brand_id,
+        Nutrition_Info(
+            0.0,
+            0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False
+        )
+    )
     recipe_id = recipe_book.create_recipe(recipe_group_id, "Test Recipe", [bytes(range(64))], ["Test Instruction"], [(ingredient_id, 1)], [tool_id])
     recipe_groups: list[sqlite3.Row] = recipe_book.get_recipe_groups()
     if len(recipe_groups) > 0:
