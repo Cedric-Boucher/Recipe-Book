@@ -59,7 +59,6 @@ class RecipeBook():
 
         return ingredient_id
 
-
     def insert_recipe_group(self, group_name: str) -> int:
         assert (isinstance(group_name, str))
         query: Query = Queries.insert_recipe_group_query(group_name)
@@ -291,10 +290,8 @@ class RecipeBook():
     def get_all_recipe_information(self, recipe_id: int) -> list[sqlite3.Row]:
         assert (isinstance(recipe_id, int))
         assert (recipe_id > 0)
-        query: Query = Queries.get_all_recipe_information_query(recipe_id)
-        results: list[sqlite3.Row] = self.__database.run_query(query)
 
-        return results
+        return [] # TODO
 
 
 def main():
