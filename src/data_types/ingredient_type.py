@@ -1,0 +1,1 @@
+Ingredient_Type = str

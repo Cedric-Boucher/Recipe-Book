@@ -1,10 +1,12 @@
 from helpers.database import Database, sqlite3
 from queries import Queries, Query
-from data_classes.nutrition_info import Nutrition_Info
+from data_types.nutrition_info import Nutrition_Info
+from data_types.ingredient import Ingredient
+from data_types.recipe import Recipe
 import config
 
 
-class RecipeBook():
+class Recipe_Book():
     def __init__(self):
         initial_setup_queries: list[Query] = Queries.initial_setup_queries()
         self.__database: Database
@@ -295,7 +297,7 @@ class RecipeBook():
 
 
 def main():
-    recipe_book = RecipeBook()
+    recipe_book = Recipe_Book()
     recipe_group_id = recipe_book.insert_recipe_group("Test Recipe Group")
     tool_id = recipe_book.insert_tool("Test Tool")
     ingredient_type_id = recipe_book.insert_ingredient_type("Test Ingredient Type")

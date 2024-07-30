@@ -1,4 +1,7 @@
 from ingredient import Ingredient
+from instruction import Instruction
+from tool import Tool
+from picture import Picture
 import datetime
 
 class Recipe():
@@ -7,9 +10,9 @@ class Recipe():
         recipe_name: str,
         recipe_group_name: str,
         ingredients: list[Ingredient],
-        instructions: list[str],
-        tools: list[str],
-        pictures: list[bytes],
+        instructions: list[Instruction],
+        tools: list[Tool],
+        pictures: list[Picture],
         recipe_usage_datetimes: list[datetime.datetime],
 
     ) -> None:
@@ -20,13 +23,13 @@ class Recipe():
             assert (isinstance(ingredient, Ingredient))
         assert (isinstance(instructions, list))
         for instruction in instructions:
-            assert (isinstance(instruction, str))
+            assert (isinstance(instruction, Instruction))
         assert (isinstance(tools, list))
         for tool in tools:
-            assert (isinstance(tool, str))
+            assert (isinstance(tool, Tool))
         assert (isinstance(pictures, list))
         for picture in pictures:
-            assert (isinstance(picture, bytes))
+            assert (isinstance(picture, Picture))
         assert (isinstance(recipe_usage_datetimes, list))
         for recipe_usage_datetime in recipe_usage_datetimes:
             assert (isinstance(recipe_usage_datetime, datetime.datetime))
@@ -34,9 +37,9 @@ class Recipe():
         self.__recipe_name: str = recipe_name
         self.__recipe_group_name: str = recipe_group_name
         self.__ingredients: list[Ingredient] = ingredients
-        self.__instructions: list[str] = instructions
-        self.__tools: list[str] = tools
-        self.__pictures: list[bytes] = pictures
+        self.__instructions: list[Instruction] = instructions
+        self.__tools: list[Tool] = tools
+        self.__pictures: list[Picture] = pictures
         self.__recipe_usage_datetimes: list[datetime.datetime] = recipe_usage_datetimes
 
     @property
@@ -52,15 +55,15 @@ class Recipe():
         return self.__ingredients
 
     @property
-    def instructions(self) -> list[str]:
+    def instructions(self) -> list[Instruction]:
         return self.__instructions
 
     @property
-    def tools(self) -> list[str]:
+    def tools(self) -> list[Tool]:
         return self.__tools
 
     @property
-    def pictures(self) -> list[bytes]:
+    def pictures(self) -> list[Picture]:
         return self.__pictures
 
     @property
