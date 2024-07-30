@@ -283,7 +283,7 @@ class Recipe_Book():
 
         return results
 
-    def get_ingredient(self) -> list[sqlite3.Row]:
+    def get_ingredients(self) -> list[sqlite3.Row]:
         query: Query = Queries.get_ingredients_query()
         results: list[sqlite3.Row] = self.__database.run_query(query)
 
