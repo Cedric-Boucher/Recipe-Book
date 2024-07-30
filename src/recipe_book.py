@@ -1,6 +1,6 @@
-from database import Database, sqlite3
+from helpers.database import Database, sqlite3
 from queries import Queries, Query
-from nutrition_info import Nutrition_Info
+from data_classes.nutrition_info import Nutrition_Info
 import config
 
 

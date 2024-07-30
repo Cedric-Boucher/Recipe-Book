@@ -2,7 +2,7 @@ import sqlite3
 import os
 
 from queries import Query
-from logger import Logger
+from helpers.logger import Logger
 
 class Database:
     def __init__(self, filename: str, log_file_path: str):
