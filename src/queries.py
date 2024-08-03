@@ -876,13 +876,29 @@ class Queries():
 
     @staticmethod
     def get_recipe_groups_query() -> Query:
-        query: Query =  """
+        query: Query = """
             SELECT
                 `recipe_group_id`,
                 `name`
             FROM
                 `recipe_groups`;
         """
+
+        return query
+
+    @staticmethod
+    def get_recipe_group_query(recipe_group_id: int) -> Query:
+        assert (isinstance(recipe_group_id, int))
+        assert (recipe_group_id > 0)
+        query: Query = """
+            SELECT
+                `recipe_group_id`,
+                `name`
+            FROM
+                `recipe_groups`
+            WHERE
+                `recipe_group_id` = {recipe_group_id};
+        """.format(recipe_group_id = recipe_group_id)
 
         return query
 
@@ -912,14 +928,32 @@ class Queries():
         return query
 
     @staticmethod
+    def get_recipe_query(recipe_id: int) -> Query:
+        assert (isinstance(recipe_id, int))
+        assert (recipe_id > 0)
+        query: Query = """
+            SELECT
+                `recipe_id`,
+                `recipe_group_id`,
+                `name`,
+                `required_time_minutes`
+            FROM
+                `recipes`
+            WHERE
+                `recipe_id` = {recipe_id};
+        """.format(recipe_id = recipe_id)
+
+        return query
+
+    @staticmethod
     def get_tools_query(recipe_id: int | None = None) -> Query:
         assert (isinstance(recipe_id, int) or recipe_id is None)
         if (isinstance(recipe_id, int)):
             assert (recipe_id > 0)
         query: Query = """
             SELECT
-                `tool_id`,
-                `name`
+                `tools`.`tool_id`,
+                `tools`.`name`
             FROM
                 `tools`
             {where_recipe_id};
@@ -949,8 +983,8 @@ class Queries():
             assert (recipe_id > 0)
         query: Query = """
             SELECT
-                `picture_id`,
-                `picture`
+                `pictures`.`picture_id`,
+                `pictures`.`picture`
             FROM
                 `pictures`
             {where_recipe_id};
@@ -1012,13 +1046,13 @@ class Queries():
             assert (recipe_id > 0)
         query: Query = """
             SELECT
-                `ingredient_id`,
+                `ingredients`.`ingredient_id`,
                 {amount_grams}
-                `ingredient_type_id`,
-                `ingredient_type`,
-                `ingredient_brand_id`,
-                `ingredient_brand`,
-                `nutrition_info_id`,
+                `ingredients`.`ingredient_type_id`,
+                `ingredient_types`.`ingredient_type`,
+                `ingredients`.`ingredient_brand_id`,
+                `ingredient_brands`.`name` AS ingredient_brand,
+                `ingredients`.`nutrition_info_id`,
                 `nutrition_info`.*
             FROM
                 `ingredients`
@@ -1049,7 +1083,7 @@ class Queries():
                 recipe_id = recipe_id
             )
         query = query.format(
-            amount_grams = ("" if recipe_id is None else "`amount_g`,"),
+            amount_grams = ("" if recipe_id is None else "`recipes_ingredients`.`amount_g` AS amount_grams,"),
             where_recipe_id = where_recipe_id
         )
 

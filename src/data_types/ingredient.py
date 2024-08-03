@@ -1,6 +1,6 @@
-from nutrition_info import Nutrition_Info
-from ingredient_brand import Ingredient_Brand
-from ingredient_type import Ingredient_Type
+from data_types.nutrition_info import Nutrition_Info
+from data_types.ingredient_brand import Ingredient_Brand
+from data_types.ingredient_type import Ingredient_Type
 
 class Ingredient():
     def __init__(

@@ -1,7 +1,7 @@
-from ingredient import Ingredient
-from instruction import Instruction
-from tool import Tool
-from picture import Picture
+from data_types.ingredient import Ingredient
+from data_types.instruction import Instruction
+from data_types.tool import Tool
+from data_types.picture import Picture
 import datetime
 
 class Recipe():
@@ -13,7 +13,7 @@ class Recipe():
         instructions: list[Instruction],
         tools: list[Tool],
         pictures: list[Picture],
-        required_time_minutes: int,
+        required_time_minutes: int | None,
         recipe_usage_datetimes: list[datetime.datetime]
     ) -> None:
         assert (isinstance(recipe_name, str))
@@ -30,7 +30,7 @@ class Recipe():
         assert (isinstance(pictures, list))
         for picture in pictures:
             assert (isinstance(picture, Picture))
-        assert (isinstance(required_time_minutes, int))
+        assert (isinstance(required_time_minutes, int) or required_time_minutes is None)
         assert (isinstance(recipe_usage_datetimes, list))
         for recipe_usage_datetime in recipe_usage_datetimes:
             assert (isinstance(recipe_usage_datetime, datetime.datetime))
@@ -41,7 +41,7 @@ class Recipe():
         self.__instructions: list[Instruction] = instructions
         self.__tools: list[Tool] = tools
         self.__pictures: list[Picture] = pictures
-        self.__required_time_minutes: int = required_time_minutes
+        self.__required_time_minutes: int | None = required_time_minutes
         self.__recipe_usage_datetimes: list[datetime.datetime] = recipe_usage_datetimes
 
     @property
@@ -69,7 +69,7 @@ class Recipe():
         return self.__pictures
 
     @property
-    def required_time_minutes(self) -> int:
+    def required_time_minutes(self) -> int | None:
         return self.__required_time_minutes
 
     @property

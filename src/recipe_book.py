@@ -3,7 +3,13 @@ from queries import Queries, Query
 from data_types.nutrition_info import Nutrition_Info
 from data_types.ingredient import Ingredient
 from data_types.recipe import Recipe
+from data_types.tool import Tool
+from data_types.picture import Picture
+from data_types.instruction import Instruction
+from data_types.ingredient_type import Ingredient_Type
+from data_types.ingredient_brand import Ingredient_Brand
 import config
+import datetime
 
 
 class Recipe_Book():
@@ -253,6 +259,8 @@ class Recipe_Book():
 
         return recipe_tool_id
 
+    # TODO remove "dumb" getters that just return raw database data
+
     def get_recipe_groups(self) -> list[sqlite3.Row]:
         query: Query = Queries.get_recipe_groups_query()
         results: list[sqlite3.Row] = self.__database.run_query(query)
@@ -289,11 +297,136 @@ class Recipe_Book():
 
         return results
 
-    def get_all_recipe_information(self, recipe_id: int) -> list[sqlite3.Row]:
+    def get_all_recipe_information(self, recipe_id: int) -> Recipe:
         assert (isinstance(recipe_id, int))
         assert (recipe_id > 0)
 
-        return [] # TODO
+        # get info from recipes table
+        query: Query = Queries.get_recipe_query(recipe_id)
+        results: list[sqlite3.Row] = self.__database.run_query(query)
+        assert (len(results) == 1)
+        recipe_name: str = results[0]["name"]
+        required_time_minutes: int = results[0]["required_time_minutes"]
+        recipe_group_id: int = results[0]["recipe_group_id"]
+
+        # get info from recipe_groups table
+        query: Query = Queries.get_recipe_group_query(recipe_group_id)
+        results: list[sqlite3.Row] = self.__database.run_query(query)
+        assert (len(results) == 1)
+        recipe_group_name: str = results[0]["name"]
+
+        # get info from ingredients table
+        ingredients: list[Ingredient] = []
+        query: Query = Queries.get_ingredients_query(recipe_id)
+        results: list[sqlite3.Row] = self.__database.run_query(query)
+        for result in results:
+            ingredient_type: Ingredient_Type = result["ingredient_type"]
+            ingredient_brand: Ingredient_Brand = result["ingredient_brand"]
+            nutrition_info: Nutrition_Info = Nutrition_Info(
+                result["l_per_kg"],
+                result["kilocalories_per_kg"],
+                result["g_fat_per_kg"],
+                result["g_saturated_fat_per_kg"],
+                result["g_trans_fat_per_kg"],
+                result["g_carbohydrate_per_kg"],
+                result["g_dietary_fibre_per_kg"],
+                result["g_sugars_per_kg"],
+                result["g_protein_per_kg"],
+                result["g_cholesterol_per_kg"],
+                result["mg_sodium_per_kg"],
+                result["mg_potassium_per_kg"],
+                result["mg_calcium_per_kg"],
+                result["mg_iron_per_kg"],
+                bool(result["has_gluten"]),
+                bool(result["is_meat"]),
+                bool(result["is_dairy"]),
+                bool(result["is_animal_product"]),
+                bool(result["is_nut"]),
+                bool(result["is_soy"]),
+                result["g_omega6_polyunsaturated_fat_per_kg"],
+                result["g_omega3_polyunsaturated_fat_per_kg"],
+                result["g_monounsaturated_fat_per_kg"],
+                result["g_soluble_fibre_per_kg"],
+                result["g_insoluble_fibre_per_kg"],
+                result["g_sugar_alcohols_per_kg"],
+                result["g_starch_per_kg"],
+                result["ug_vitamin_a_per_kg"],
+                result["mg_vitamin_c_per_kg"],
+                result["ug_vitamin_d_per_kg"],
+                result["mg_vitamin_e_per_kg"],
+                result["ug_vitamin_k_per_kg"],
+                result["mg_thiamine_per_kg"],
+                result["mg_riboflavin_per_kg"],
+                result["mg_niacin_per_kg"],
+                result["mg_vitamin_b6_per_kg"],
+                result["ug_folate_per_kg"],
+                result["ug_vitamin_b12_per_kg"],
+                result["ug_biotin_per_kg"],
+                result["mg_pantothenate_per_kg"],
+                result["mg_choline_per_kg"],
+                result["mg_phosphorous_per_kg"],
+                result["ug_iodide_per_kg"],
+                result["mg_magnesium_per_kg"],
+                result["mg_zinc_per_kg"],
+                result["ug_selenium_per_kg"],
+                result["mg_copper_per_kg"],
+                result["mg_manganese_per_kg"],
+                result["ug_chromium_per_kg"],
+                result["ug_molybdenum_per_kg"],
+                result["mg_chloride_per_kg"]
+            )
+            amount_grams: int = result["amount_grams"]
+            ingredient: Ingredient = Ingredient(
+                ingredient_type,
+                ingredient_brand,
+                nutrition_info,
+                amount_grams
+            )
+            ingredients.append(ingredient)
+
+        # get info from instructions table
+        unsorted_instructions: list[tuple[int, Instruction]] = []
+        query: Query = Queries.get_instructions_query(recipe_id)
+        results: list[sqlite3.Row] = self.__database.run_query(query)
+        for result in results:
+            instruction_number: int = result["instruction_number"]
+            instruction: Instruction = result["instruction"]
+            unsorted_instructions.append((instruction_number, instruction))
+        unsorted_instructions.sort(key = lambda x: x[0])
+        instructions: list[Instruction] = [instruction[1] for instruction in unsorted_instructions]
+
+        # get info from the tools table
+        query: Query = Queries.get_tools_query(recipe_id)
+        results: list[sqlite3.Row] = self.__database.run_query(query)
+        tools: list[Tool] = [result["name"] for result in results]
+
+        # get info from the pictures table
+        query: Query = Queries.get_pictures_query(recipe_id)
+        results: list[sqlite3.Row] = self.__database.run_query(query)
+        pictures: list[Picture] = [result["picture"] for result in results]
+
+        # get info from recipe usage table
+        query: Query = Queries.get_recipe_usage_query(recipe_id)
+        results: list[sqlite3.Row] = self.__database.run_query(query)
+        recipe_usage_datetimes: list[datetime.datetime] = [
+            datetime.datetime.strptime(result["datetime"], "%Y-%m-%d %H:%M:%S")
+            for result
+            in results
+        ]
+
+        # combine all results into Recipe object
+        recipe: Recipe = Recipe(
+            recipe_name,
+            recipe_group_name,
+            ingredients,
+            instructions,
+            tools,
+            pictures,
+            required_time_minutes,
+            recipe_usage_datetimes
+        )
+
+        return recipe
 
 
 def main():
