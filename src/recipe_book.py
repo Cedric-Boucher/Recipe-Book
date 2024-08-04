@@ -479,50 +479,6 @@ def main():
         )
     )
     recipe_id = recipe_book.create_recipe(recipe_group_id, "Test Recipe", [bytes(range(64))], ["Test Instruction"], [(ingredient_id, 1)], [tool_id])
-    recipe_groups: list[sqlite3.Row] = recipe_book.get_recipe_groups()
-    if len(recipe_groups) > 0:
-        columns: list[str] = recipe_groups[0].keys()
-        print("RECIPE GROUPS:")
-        for recipe_group in recipe_groups:
-            print("[")
-            [print("{}: {}".format(column, recipe_group[column])) for column in columns]
-            print("]")
-
-    recipes: list[sqlite3.Row] = recipe_book.get_recipes()
-    if len(recipes) > 0:
-        columns: list[str] = recipes[0].keys()
-        print("RECIPES:")
-        for recipe in recipes:
-            print("[")
-            [print("{}: {}".format(column, recipe[column])) for column in columns]
-            print("]")
-
-    tools: list[sqlite3.Row] = recipe_book.get_tools()
-    if len(tools) > 0:
-        columns: list[str] = tools[0].keys()
-        print("TOOLS:")
-        for tool in tools:
-            print("[")
-            [print("{}: {}".format(column, tool[column])) for column in columns]
-            print("]")
-
-    pictures: list[sqlite3.Row] = recipe_book.get_pictures()
-    if len(pictures) > 0:
-        columns: list[str] = pictures[0].keys()
-        print("TOOLS:")
-        for picture in pictures:
-            print("[")
-            [print("{}: {}".format(column, picture[column])) for column in columns]
-            print("]")
-
-    instructions: list[sqlite3.Row] = recipe_book.get_instructions()
-    if len(instructions) > 0:
-        columns: list[str] = instructions[0].keys()
-        print("TOOLS:")
-        for instruction in instructions:
-            print("[")
-            [print("{}: {}".format(column, instruction[column])) for column in columns]
-            print("]")
 
     everything = recipe_book.get_all_recipe_information(recipe_id)
     print(everything)
