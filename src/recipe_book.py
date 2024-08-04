@@ -261,61 +261,91 @@ class Recipe_Book():
 
     # TODO remove "dumb" getters that just return raw database data
 
-    def get_recipe_groups(self) -> list[sqlite3.Row]:
-        query: Query = Queries.get_recipe_groups_query()
-        results: list[sqlite3.Row] = self.__database.run_query(query)
-
-        return results
-
     def get_recipes(self) -> list[sqlite3.Row]:
         query: Query = Queries.get_recipes_query()
         results: list[sqlite3.Row] = self.__database.run_query(query)
 
         return results
 
-    def get_tools(self) -> list[sqlite3.Row]:
-        query: Query = Queries.get_tools_query()
-        results: list[sqlite3.Row] = self.__database.run_query(query)
-
-        return results
-
-    def get_pictures(self) -> list[sqlite3.Row]:
-        query: Query = Queries.get_pictures_query()
-        results: list[sqlite3.Row] = self.__database.run_query(query)
-
-        return results
-
-    def get_instructions(self) -> list[sqlite3.Row]:
-        query: Query = Queries.get_instructions_query()
-        results: list[sqlite3.Row] = self.__database.run_query(query)
-
-        return results
-
-    def get_ingredients(self) -> list[sqlite3.Row]:
-        query: Query = Queries.get_ingredients_query()
-        results: list[sqlite3.Row] = self.__database.run_query(query)
-
-        return results
-
-    def get_all_recipe_information(self, recipe_id: int) -> Recipe:
+    def __get_recipe_info(self, recipe_id: int) -> tuple[str, int]:
+        """returns (recipe_name, required_time_minutes)
+        """
         assert (isinstance(recipe_id, int))
         assert (recipe_id > 0)
 
-        # get info from recipes table
         query: Query = Queries.get_recipe_query(recipe_id)
         results: list[sqlite3.Row] = self.__database.run_query(query)
         assert (len(results) == 1)
         recipe_name: str = results[0]["name"]
         required_time_minutes: int = results[0]["required_time_minutes"]
-        recipe_group_id: int = results[0]["recipe_group_id"]
 
-        # get info from recipe_groups table
-        query: Query = Queries.get_recipe_group_query(recipe_group_id)
+        return (recipe_name, required_time_minutes)
+
+    def __get_recipe_group_for_recipe(self, recipe_id: int) -> str:
+        assert (isinstance(recipe_id, int))
+        assert (recipe_id > 0)
+
+        query: Query = Queries.get_recipe_group_query(recipe_id)
         results: list[sqlite3.Row] = self.__database.run_query(query)
         assert (len(results) == 1)
         recipe_group_name: str = results[0]["name"]
 
-        # get info from ingredients table
+        return recipe_group_name
+
+    def __get_recipe_usage(self, recipe_id: int) -> list[datetime.datetime]:
+        assert (isinstance(recipe_id, int))
+        assert (recipe_id > 0)
+
+        query: Query = Queries.get_recipe_usage_query(recipe_id)
+        results: list[sqlite3.Row] = self.__database.run_query(query)
+        recipe_usage_datetimes: list[datetime.datetime] = [
+            datetime.datetime.strptime(result["datetime"], "%Y-%m-%d %H:%M:%S")
+            for result
+            in results
+        ]
+
+        return recipe_usage_datetimes
+
+    def __get_tools_for_recipe(self, recipe_id: int) -> list[Tool]:
+        assert (isinstance(recipe_id, int))
+        assert (recipe_id > 0)
+
+        query: Query = Queries.get_tools_query(recipe_id)
+        results: list[sqlite3.Row] = self.__database.run_query(query)
+        tools: list[Tool] = [result["name"] for result in results]
+
+        return tools
+
+    def __get_pictures_of_recipe(self, recipe_id: int) -> list[Picture]:
+        assert (isinstance(recipe_id, int))
+        assert (recipe_id > 0)
+
+        query: Query = Queries.get_pictures_query(recipe_id)
+        results: list[sqlite3.Row] = self.__database.run_query(query)
+        pictures: list[Picture] = [result["picture"] for result in results]
+
+        return pictures
+
+    def __get_instructions_for_recipe(self, recipe_id: int) -> list[Instruction]:
+        assert (isinstance(recipe_id, int))
+        assert (recipe_id > 0)
+
+        unsorted_instructions: list[tuple[int, Instruction]] = []
+        query: Query = Queries.get_instructions_query(recipe_id)
+        results: list[sqlite3.Row] = self.__database.run_query(query)
+        for result in results:
+            instruction_number: int = result["instruction_number"]
+            instruction: Instruction = result["instruction"]
+            unsorted_instructions.append((instruction_number, instruction))
+        unsorted_instructions.sort(key = lambda x: x[0])
+        instructions: list[Instruction] = [instruction[1] for instruction in unsorted_instructions]
+
+        return instructions
+
+    def __get_ingredients_in_recipe(self, recipe_id: int) -> list[Ingredient]:
+        assert (isinstance(recipe_id, int))
+        assert (recipe_id > 0)
+
         ingredients: list[Ingredient] = []
         query: Query = Queries.get_ingredients_query(recipe_id)
         results: list[sqlite3.Row] = self.__database.run_query(query)
@@ -384,35 +414,22 @@ class Recipe_Book():
             )
             ingredients.append(ingredient)
 
-        # get info from instructions table
-        unsorted_instructions: list[tuple[int, Instruction]] = []
-        query: Query = Queries.get_instructions_query(recipe_id)
-        results: list[sqlite3.Row] = self.__database.run_query(query)
-        for result in results:
-            instruction_number: int = result["instruction_number"]
-            instruction: Instruction = result["instruction"]
-            unsorted_instructions.append((instruction_number, instruction))
-        unsorted_instructions.sort(key = lambda x: x[0])
-        instructions: list[Instruction] = [instruction[1] for instruction in unsorted_instructions]
+        return ingredients
 
-        # get info from the tools table
-        query: Query = Queries.get_tools_query(recipe_id)
-        results: list[sqlite3.Row] = self.__database.run_query(query)
-        tools: list[Tool] = [result["name"] for result in results]
+    def get_all_recipe_information(self, recipe_id: int) -> Recipe:
+        assert (isinstance(recipe_id, int))
+        assert (recipe_id > 0)
 
-        # get info from the pictures table
-        query: Query = Queries.get_pictures_query(recipe_id)
-        results: list[sqlite3.Row] = self.__database.run_query(query)
-        pictures: list[Picture] = [result["picture"] for result in results]
-
-        # get info from recipe usage table
-        query: Query = Queries.get_recipe_usage_query(recipe_id)
-        results: list[sqlite3.Row] = self.__database.run_query(query)
-        recipe_usage_datetimes: list[datetime.datetime] = [
-            datetime.datetime.strptime(result["datetime"], "%Y-%m-%d %H:%M:%S")
-            for result
-            in results
-        ]
+        # get info from recipes table
+        recipe_name: str
+        required_time_minutes: int
+        recipe_name, required_time_minutes = self.__get_recipe_info(recipe_id)
+        recipe_group_name: str = self.__get_recipe_group_for_recipe(recipe_id)
+        ingredients: list[Ingredient] = self.__get_ingredients_in_recipe(recipe_id)
+        instructions: list[Instruction] = self.__get_instructions_for_recipe(recipe_id)
+        tools: list[Tool] = self.__get_tools_for_recipe(recipe_id)
+        pictures: list[Picture] = self.__get_pictures_of_recipe(recipe_id)
+        recipe_usage_datetimes: list[datetime.datetime] = self.__get_recipe_usage(recipe_id)
 
         # combine all results into Recipe object
         recipe: Recipe = Recipe(

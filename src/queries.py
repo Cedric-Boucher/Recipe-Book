@@ -887,18 +887,22 @@ class Queries():
         return query
 
     @staticmethod
-    def get_recipe_group_query(recipe_group_id: int) -> Query:
-        assert (isinstance(recipe_group_id, int))
-        assert (recipe_group_id > 0)
+    def get_recipe_group_query(recipe_id: int) -> Query:
+        assert (isinstance(recipe_id, int))
+        assert (recipe_id > 0)
         query: Query = """
             SELECT
-                `recipe_group_id`,
-                `name`
+                `recipe_groups`.`recipe_group_id`,
+                `recipe_groups`.`name`
             FROM
+                `recipes`
+            JOIN
                 `recipe_groups`
+            ON
+                `recipe_groups`.`recipe_group_id` = `recipes`.`recipe_group_id`
             WHERE
-                `recipe_group_id` = {recipe_group_id};
-        """.format(recipe_group_id = recipe_group_id)
+                `recipes`.`recipe_id` = {recipe_id};
+        """.format(recipe_id = recipe_id)
 
         return query
 
