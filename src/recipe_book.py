@@ -24,13 +24,6 @@ class Recipe_Book():
         for initial_setup_query in initial_setup_queries:
             self.__database.run_query(initial_setup_query)
 
-    # TODO make some bigger functions to do multiple things in one go:
-    # TODO create smarter code that will do EVERYTHING in one function, insert things if necessary otherwise link existing
-
-    # using something in (recipe_group, tool, ingredient, ingredient_brand, ingredient_type)
-    # should be a dropdown selection for users so they are incentivized to use existing options,
-    # with a way to create a new one if needed
-
     def create_recipe(
             self,
             recipe_group_id: int,
