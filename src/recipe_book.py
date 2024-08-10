@@ -191,7 +191,7 @@ class Recipe_Book():
                 nutrition_info.milligrams_of_pantothenate_per_kilogram,
                 nutrition_info.milligrams_of_choline_per_kilogram,
                 nutrition_info.milligrams_of_phosphorous_per_kilogram,
-                nutrition_info.micrograms_of_iodide_per_kilograms,
+                nutrition_info.micrograms_of_iodide_per_kilogram,
                 nutrition_info.milligrams_of_magnesium_per_kilogram,
                 nutrition_info.milligrams_of_zinc_per_kilogram,
                 nutrition_info.micrograms_of_selenium_per_kilogram,

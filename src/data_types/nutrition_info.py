@@ -43,7 +43,7 @@ class Nutrition_Info():
         milligrams_of_pantothenate_per_kilogram: float | None = None,
         milligrams_of_choline_per_kilogram: float | None = None,
         milligrams_of_phosphorous_per_kilogram: float | None = None,
-        micrograms_of_iodide_per_kilograms: float | None = None,
+        micrograms_of_iodide_per_kilogram: float | None = None,
         milligrams_of_magnesium_per_kilogram: float | None = None,
         milligrams_of_zinc_per_kilogram: float | None = None,
         micrograms_of_selenium_per_kilogram: float | None = None,
@@ -89,7 +89,7 @@ class Nutrition_Info():
         assert (isinstance(milligrams_of_pantothenate_per_kilogram, float) or milligrams_of_pantothenate_per_kilogram is None)
         assert (isinstance(milligrams_of_choline_per_kilogram, float) or milligrams_of_choline_per_kilogram is None)
         assert (isinstance(milligrams_of_phosphorous_per_kilogram, float) or milligrams_of_phosphorous_per_kilogram is None)
-        assert (isinstance(micrograms_of_iodide_per_kilograms, float) or micrograms_of_iodide_per_kilograms is None)
+        assert (isinstance(micrograms_of_iodide_per_kilogram, float) or micrograms_of_iodide_per_kilogram is None)
         assert (isinstance(milligrams_of_magnesium_per_kilogram, float) or milligrams_of_magnesium_per_kilogram is None)
         assert (isinstance(milligrams_of_zinc_per_kilogram, float) or milligrams_of_zinc_per_kilogram is None)
         assert (isinstance(micrograms_of_selenium_per_kilogram, float) or micrograms_of_selenium_per_kilogram is None)
@@ -147,7 +147,7 @@ class Nutrition_Info():
         self.__milligrams_of_pantothenate_per_kilogram: float | None = milligrams_of_pantothenate_per_kilogram
         self.__milligrams_of_choline_per_kilogram: float | None = milligrams_of_choline_per_kilogram
         self.__milligrams_of_phosphorous_per_kilogram: float | None = milligrams_of_phosphorous_per_kilogram
-        self.__micrograms_of_iodide_per_kilograms: float | None = micrograms_of_iodide_per_kilograms
+        self.__micrograms_of_iodide_per_kilogram: float | None = micrograms_of_iodide_per_kilogram
         self.__milligrams_of_magnesium_per_kilogram: float | None = milligrams_of_magnesium_per_kilogram
         self.__milligrams_of_zinc_per_kilogram: float | None = milligrams_of_zinc_per_kilogram
         self.__micrograms_of_selenium_per_kilogram: float | None = micrograms_of_selenium_per_kilogram
@@ -326,8 +326,8 @@ class Nutrition_Info():
         return self.__milligrams_of_phosphorous_per_kilogram
 
     @property
-    def micrograms_of_iodide_per_kilograms(self) -> float | None:
-        return self.__micrograms_of_iodide_per_kilograms
+    def micrograms_of_iodide_per_kilogram(self) -> float | None:
+        return self.__micrograms_of_iodide_per_kilogram
 
     @property
     def milligrams_of_magnesium_per_kilogram(self) -> float | None:
