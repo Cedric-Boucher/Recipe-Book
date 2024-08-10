@@ -75,3 +75,26 @@ class Recipe():
     @property
     def recipe_usage_datetimes(self) -> list[datetime.datetime]:
         return self.__recipe_usage_datetimes
+
+    def __str__(self) -> str:
+        output: str = "Recipe:\n"
+        output += "\tRecipe Name: {}\n".format(self.recipe_name)
+        output += "\tRecipe Group Name: {}\n".format(self.recipe_group_name)
+        output += "\tRequired Time Minutes: {}\n".format(self.required_time_minutes)
+        output += "\tRecipe Usage Datetimes:\n"
+        for usage_datetime in self.recipe_usage_datetimes:
+            output += "\t\t{recipe_usage_datetime}\n".format(recipe_usage_datetime = usage_datetime.strftime("%Y-%m-%d %H:%M:%S"))
+        output += "\tPicture Count: {}\n".format(len(self.pictures))
+        output += "\tTools:\n"
+        for tool in self.tools:
+            output += "\t\t{tool}\n".format(tool = tool)
+        output += "\tInstructions:\n"
+        for instruction in self.instructions:
+            output += "\t\t{instruction}\n".format(instruction = instruction)
+        output += "\tIngredients:\n"
+        for ingredient in self.ingredients:
+            ingredient_str: list[str] = str(ingredient).splitlines()
+            for line in ingredient_str:
+                output += "\t\t{line}\n".format(line = line)        
+
+        return output

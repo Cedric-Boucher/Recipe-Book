@@ -38,3 +38,14 @@ class Ingredient():
     @property
     def amount_grams(self) -> int:
         return self.__amount_grams
+
+    def __str__(self) -> str:
+        output: str = "Ingredient:\n"
+        output += "\tIngredient Type: {}\n".format(self.ingredient_type)
+        output += "\tIngredient Brand: {}\n".format(self.ingredient_brand)
+        output += "\tAmount Grams: {}\n".format(self.amount_grams)
+        nutrition_info_str: list[str] = str(self.nutrition_info).splitlines()
+        for line in nutrition_info_str:
+            output += "\t{line}\n".format(line = line)
+
+        return output
