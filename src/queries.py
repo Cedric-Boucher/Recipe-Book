@@ -321,26 +321,32 @@ class Queries():
         return query
 
     @staticmethod
-    def insert_recipe_query(recipe_group_id: int, recipe_name: str) -> Query:
+    def insert_recipe_query(recipe_group_id: int, recipe_name: str, required_time_minutes: int | None) -> Query:
         assert (isinstance(recipe_group_id, int))
         assert (recipe_group_id > 0)
         assert (isinstance(recipe_name, str))
         recipe_name = recipe_name.replace('"', "")
+        assert (isinstance(required_time_minutes, int) or required_time_minutes is None)
+        if (isinstance(required_time_minutes, int)):
+            assert (required_time_minutes > 0)
 
         query: Query = """
             INSERT INTO `recipes`
             (
                 `recipe_group_id`,
-                `name`
+                `name`,
+                `required_time_minutes`
             )
             VALUES
             (
                 {recipe_group_id},
-                "{recipe_name}"
+                "{recipe_name}",
+                {required_time_minutes}
             );
         """.format(
             recipe_group_id = recipe_group_id,
-            recipe_name = recipe_name
+            recipe_name = recipe_name,
+            required_time_minutes = required_time_minutes
         )
 
         return query

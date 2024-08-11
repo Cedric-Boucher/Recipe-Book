@@ -28,12 +28,13 @@ class Recipe_Book():
             self,
             recipe_group_id: int,
             recipe_name: str,
+            required_time_minutes: int | None,
             pictures: list[bytes],
             instructions: list[str],
             ingredient_ids_and_amounts: list[tuple[int, int]],
             tool_ids: list[int]
     ) -> int:
-        recipe_id: int = self.__insert_recipe(recipe_group_id, recipe_name)
+        recipe_id: int = self.__insert_recipe(recipe_group_id, recipe_name, required_time_minutes)
         for picture in pictures:
             picture_id: int = self.__insert_picture(picture)
             self.__link_picture_to_recipe(recipe_id, picture_id)
@@ -69,11 +70,15 @@ class Recipe_Book():
 
         return recipe_group_id
 
-    def __insert_recipe(self, recipe_group_id: int, recipe_name: str) -> int:
+    def __insert_recipe(self, recipe_group_id: int, recipe_name: str, required_time_minutes: int | None) -> int:
         assert (isinstance(recipe_group_id, int))
         assert (recipe_group_id > 0)
         assert (isinstance(recipe_name, str))
-        query: Query = Queries.insert_recipe_query(recipe_group_id, recipe_name)
+        assert (isinstance(required_time_minutes, int) or required_time_minutes is None)
+        if (isinstance(required_time_minutes, int)):
+            assert (required_time_minutes > 0)
+
+        query: Query = Queries.insert_recipe_query(recipe_group_id, recipe_name, required_time_minutes)
         self.__database.run_query(query)
         recipe_id: int | None = self.__database.get_last_row_id()
         assert (recipe_id is not None)
