@@ -34,6 +34,20 @@ class Recipe_Book():
             ingredient_ids_and_amounts: list[tuple[int, int]],
             tool_ids: list[int]
     ) -> int:
+        """Creates a recipe in the database, including all of its dependencies
+
+        Args:
+            recipe_group_id (int): the ID of the group that the recipe belongs to
+            recipe_name (str): the name of the recipe
+            required_time_minutes (int | None): an estimate of the amount of time in minutes required to follow the recipe
+            pictures (list[bytes]): a list of pictures of the recipe
+            instructions (list[str]): the list of instruction steps for the recipe
+            ingredient_ids_and_amounts (list[tuple[int, int]]): the list of ingredients and their amounts in the recipe
+            tool_ids (list[int]): the list of IDs of the tools needed for the recipe
+
+        Returns:
+            int: the ID of the recipe in the recipes table
+        """
         recipe_id: int = self.__insert_recipe(recipe_group_id, recipe_name, required_time_minutes)
         for picture in pictures:
             picture_id: int = self.__insert_picture(picture)
@@ -56,12 +70,30 @@ class Recipe_Book():
             ingredient_brand_id: int,
             nutrition_info: Nutrition_Info
     ) -> int:
+        """Creates an ingredient in the database, including all of its dependencies
+
+        Args:
+            ingredient_type_id (int): the ID of the ingredient type (what the ingredient is)
+            ingredient_brand_id (int): the ID of the ingredient brand
+            nutrition_info (Nutrition_Info): the Nutrition_Info object representing the ingredient's nutrition info
+
+        Returns:
+            int: the ID of the ingredient in the ingredients table
+        """
         nutrition_info_id: int = self.__insert_nutrition_info(nutrition_info)
         ingredient_id: int = self.__insert_ingredient(ingredient_type_id, ingredient_brand_id, nutrition_info_id)
 
         return ingredient_id
 
     def insert_recipe_group(self, group_name: str) -> int:
+        """Inserts a recipe group in the database
+
+        Args:
+            group_name (str): the name of the recipe group
+
+        Returns:
+            int: the ID of the recipe group in the recipe_groups table
+        """
         assert (isinstance(group_name, str))
         query: Query = Queries.insert_recipe_group_query(group_name)
         self.__database.run_query(query)
@@ -71,6 +103,17 @@ class Recipe_Book():
         return recipe_group_id
 
     def __insert_recipe(self, recipe_group_id: int, recipe_name: str, required_time_minutes: int | None) -> int:
+        """Inserts a recipe in the database and links it to the recipe group it belongs to.
+        This method is for a raw insert into the recipes table, after data validation
+
+        Args:
+            recipe_group_id (int): the ID of the recipe group that the recipe belongs to
+            recipe_name (str): the name of the recipe
+            required_time_minutes (int | None): an estimate of the amount of time in minutes required to follow the recipe
+
+        Returns:
+            int: the ID of the recipe in the recipes table
+        """
         assert (isinstance(recipe_group_id, int))
         assert (recipe_group_id > 0)
         assert (isinstance(recipe_name, str))
@@ -86,6 +129,15 @@ class Recipe_Book():
         return recipe_id
 
     def insert_tool(self, tool_name: str) -> int:
+        """Inserts a tool in the database.
+        This method is for a raw insert into the tools table, after data validation
+
+        Args:
+            tool_name (str): the name of the tool
+
+        Returns:
+            int: the ID of the tool in the tools table
+        """
         assert (isinstance(tool_name, str))
         query: Query = Queries.insert_tool_query(tool_name)
         self.__database.run_query(query)
@@ -95,6 +147,15 @@ class Recipe_Book():
         return tool_id
 
     def __insert_picture(self, picture: bytes) -> int:
+        """Inserts a picture in the database.
+        This method is for a raw insert into the pictures table, after data validation
+
+        Args:
+            picture (bytes): the bytes of the image file
+
+        Returns:
+            int: the ID of the picture in the pictures table
+        """
         assert (isinstance(picture, bytes))
         query: Query = Queries.insert_picture_query()
         self.__database.run_query_insert_blob(query, (picture,))
@@ -104,6 +165,15 @@ class Recipe_Book():
         return picture_id
 
     def __insert_instruction(self, instruction: str) -> int:
+        """Inserts an instruction in the database.
+        This method is for a raw insert into the instructions table, after data validation
+
+        Args:
+            instruction (str): the text for the instruction step
+
+        Returns:
+            int: the ID of the instruction in the instructions table
+        """
         assert (isinstance(instruction, str))
         query: Query = Queries.insert_instruction_query(instruction)
         self.__database.run_query(query)
@@ -113,6 +183,17 @@ class Recipe_Book():
         return instruction_id
 
     def __insert_ingredient(self, ingredient_type_id: int, ingredient_brand_id: int, nutrition_info_id: int) -> int:
+        """Inserts an ingredient in the database, and links in to the ingredient type, brand, and nutrition info.
+        This method is for a raw insert into the ingredients table, after data validation
+
+        Args:
+            ingredient_type_id (int): the ID of the ingredient type
+            ingredient_brand_id (int): the ID of the ingredient brand
+            nutrition_info_id (int): the ID of the ingredient's nutrition info
+
+        Returns:
+            int: the ID of the ingredient in the ingredients table
+        """
         assert (isinstance(ingredient_type_id, int))
         assert (ingredient_type_id > 0)
         assert (isinstance(ingredient_brand_id, int))
@@ -127,6 +208,15 @@ class Recipe_Book():
         return ingredient_id
 
     def insert_ingredient_type(self, ingredient_type_name: str) -> int:
+        """Inserts an ingredient type in the database.
+        This method is for a raw insert into the ingredient_types table, after data validation
+
+        Args:
+            ingredient_type_name (str): the type of ingredient
+
+        Returns:
+            int: the ID of the ingredient type in the ingredient_types table
+        """
         assert (isinstance(ingredient_type_name, str))
         query: Query = Queries.insert_ingredient_type_query(ingredient_type_name)
         self.__database.run_query(query)
@@ -136,6 +226,15 @@ class Recipe_Book():
         return ingredient_type_id
 
     def insert_ingredient_brand(self, ingredient_brand_name: str) -> int:
+        """Inserts an ingredient brand in the database.
+        This method is for a raw insert into the ingredient_brands table, after data validation
+
+        Args:
+            ingredient_brand_name (str): the brand of ingredient
+
+        Returns:
+            int: the ID of the ingredient brand in the ingredient_brands table
+        """
         assert (isinstance(ingredient_brand_name, str))
         query: Query = Queries.insert_ingredient_brand_query(ingredient_brand_name)
         self.__database.run_query(query)
@@ -145,6 +244,15 @@ class Recipe_Book():
         return ingredient_brand_id
 
     def __insert_nutrition_info(self, nutrition_info: Nutrition_Info) -> int:
+        """Inserts nutrition info for one ingredient in the database.
+        This method is for a raw insert into the nutrition_info table, after data validation
+
+        Args:
+            nutrition_info (Nutrition_Info): the Nutrition_Info object representing the nutrition info for an ingredient
+
+        Returns:
+            int: the ID of the nutrition info in the nutrition_info table
+        """
         assert (isinstance(nutrition_info, Nutrition_Info))
         query: Query = Queries.insert_nutrition_info_query(
                 nutrition_info.litres_per_kilogram,
@@ -206,6 +314,17 @@ class Recipe_Book():
         return nutrition_info_id
 
     def __link_ingredient_to_recipe(self, recipe_id: int, ingredient_id: int, amount_grams: int) -> int:
+        """Links an ingredient to a recipe, along with the amount of the ingredient that is in the recipe, in grams.
+        This method is for a raw insert into the recipes_ingredients table, after data validation
+
+        Args:
+            recipe_id (int): the ID of the recipe to link the ingredient to
+            ingredient_id (int): the ID of the ingredient to link to the recipe
+            amount_grams (int): the amount of grams of the ingredient that is in the recipe
+
+        Returns:
+            int: the ID of the link in the recipes_ingredients table
+        """
         assert (isinstance(ingredient_id, int))
         assert (ingredient_id > 0)
         assert (isinstance(recipe_id, int))
@@ -220,6 +339,17 @@ class Recipe_Book():
         return recipe_ingredient_id
 
     def __link_instruction_to_recipe(self, recipe_id: int, instruction_id: int, instruction_number: int) -> int:
+        """Links an instruction to a recipe, along with the number of the instruction to order the recipe's instructions.
+        This method is for a raw insert into the recipes_instructions table, after data validation
+
+        Args:
+            recipe_id (int): the ID of the recipe to link the instruction to
+            instruction_id (int): the ID of the instruction to link to the recipe
+            instruction_number (int): the number of the instruction, used to order multiple instructions for a recipe
+
+        Returns:
+            int: the ID of the link in the recipes_instructions table
+        """
         assert (isinstance(recipe_id, int))
         assert (recipe_id > 0)
         assert (isinstance(instruction_id, int))
@@ -234,6 +364,16 @@ class Recipe_Book():
         return recipe_instruction_id
 
     def __link_picture_to_recipe(self, recipe_id: int, picture_id: int) -> int:
+        """Links a picture to a recipe.
+        This method is for a raw insert into the recipes_pictures table, after data validation
+
+        Args:
+            recipe_id (int): the ID of the recipe to link the picture to
+            picture_id (int): the ID of the picture to link to the recipe
+
+        Returns:
+            int: the ID of the link in the recipes_pictures table
+        """
         assert (isinstance(recipe_id, int))
         assert (recipe_id > 0)
         assert (isinstance(picture_id, int))
@@ -246,6 +386,16 @@ class Recipe_Book():
         return recipe_picture_id
 
     def __link_tool_to_recipe(self, recipe_id: int, tool_id: int) -> int:
+        """Links a tool to a recipe.
+        This method is for a raw insert into the recipes_tools table, after data validation
+
+        Args:
+            recipe_id (int): the ID of the recipe to link the tool to
+            tool_id (int): the ID of the tool to link to the recipe
+
+        Returns:
+            int: the ID of the link in the recipes_tools table
+        """
         assert (isinstance(recipe_id, int))
         assert (recipe_id > 0)
         assert (isinstance(tool_id, int))
