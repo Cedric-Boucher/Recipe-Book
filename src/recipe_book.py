@@ -407,8 +407,6 @@ class Recipe_Book():
 
         return recipe_tool_id
 
-    # TODO remove "dumb" getters that just return raw database data
-
     def get_recipes(self) -> list[sqlite3.Row]:
         query: Query = Queries.get_recipes_query()
         results: list[sqlite3.Row] = self.__database.run_query(query)
