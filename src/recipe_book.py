@@ -407,14 +407,14 @@ class Recipe_Book():
 
         return recipe_tool_id
 
-    def get_recipes(self) -> list[sqlite3.Row]:
-        query: Query = Queries.get_recipes_query()
-        results: list[sqlite3.Row] = self.__database.run_query(query)
-
-        return results
-
     def __get_recipe_info(self, recipe_id: int) -> tuple[str, int]:
-        """returns (recipe_name, required_time_minutes)
+        """Gets the name of the recipe as well as the estimated required time in minutes from the database
+
+        Args:
+            recipe_id (int): the ID of the recipe to get the information for
+
+        Returns:
+            tuple[str, int]: (recipe_name, required_time_minutes)
         """
         assert (isinstance(recipe_id, int))
         assert (recipe_id > 0)
@@ -428,6 +428,14 @@ class Recipe_Book():
         return (recipe_name, required_time_minutes)
 
     def __get_recipe_group_for_recipe(self, recipe_id: int) -> str:
+        """Gets the recipe's group from the database and returns the group name
+
+        Args:
+            recipe_id (int): the ID of the recipe to get the group name of
+
+        Returns:
+            str: the group name of the group that the recipe belongs to
+        """
         assert (isinstance(recipe_id, int))
         assert (recipe_id > 0)
 
@@ -439,6 +447,14 @@ class Recipe_Book():
         return recipe_group_name
 
     def __get_recipe_usage(self, recipe_id: int) -> list[datetime.datetime]:
+        """Gets the information about recipe usage from the database and returns a list of the datetimes the recipe was used
+
+        Args:
+            recipe_id (int): the ID of the recipe to get the usage datetimes for
+
+        Returns:
+            list[datetime.datetime]: a list of the datetimes at which the recipe was used
+        """
         assert (isinstance(recipe_id, int))
         assert (recipe_id > 0)
 
@@ -453,6 +469,14 @@ class Recipe_Book():
         return recipe_usage_datetimes
 
     def __get_tools_for_recipe(self, recipe_id: int) -> list[Tool]:
+        """Gets a recipe's tools from the database and returns a list of the tools
+
+        Args:
+            recipe_id (int): the ID of the recipe to get the tools for
+
+        Returns:
+            list[Tool]: a list of the Tools representing each of the tools in the recipe
+        """
         assert (isinstance(recipe_id, int))
         assert (recipe_id > 0)
 
@@ -463,6 +487,14 @@ class Recipe_Book():
         return tools
 
     def __get_pictures_of_recipe(self, recipe_id: int) -> list[Picture]:
+        """Gets a recipe's pictures from the database and returns a list of the pictures
+
+        Args:
+            recipe_id (int): the ID of the recipe to get the pictures for
+
+        Returns:
+            list[Picture]: a list of the Pictures representing each of the pictures in the recipe
+        """
         assert (isinstance(recipe_id, int))
         assert (recipe_id > 0)
 
@@ -473,6 +505,14 @@ class Recipe_Book():
         return pictures
 
     def __get_instructions_for_recipe(self, recipe_id: int) -> list[Instruction]:
+        """Gets a recipe's instructions from the database and returns a list of the instructions
+
+        Args:
+            recipe_id (int): the ID of the recipe to get the instructions for
+
+        Returns:
+            list[Instruction]: a list of Instructions representing each of the instructions in the recipe
+        """
         assert (isinstance(recipe_id, int))
         assert (recipe_id > 0)
 
@@ -489,6 +529,14 @@ class Recipe_Book():
         return instructions
 
     def __get_ingredients_in_recipe(self, recipe_id: int) -> list[Ingredient]:
+        """Gets all of the information about a recipe's ingredients from the database and compiles each ingredient into an Ingredient object
+
+        Args:
+            recipe_id (int): the ID of the recipe to get the ingredient information for
+
+        Returns:
+            list[Ingredient]: a list of Ingredient objects representing each of the ingredients in the recipe
+        """
         assert (isinstance(recipe_id, int))
         assert (recipe_id > 0)
 
@@ -563,6 +611,14 @@ class Recipe_Book():
         return ingredients
 
     def get_all_recipe_information(self, recipe_id: int) -> Recipe:
+        """Gets all of the information about a recipe from the database and compiles it into a Recipe object
+
+        Args:
+            recipe_id (int): the ID of the recipe to fetch information for
+
+        Returns:
+            Recipe: a Recipe object representing all of the information about the recipe
+        """
         assert (isinstance(recipe_id, int))
         assert (recipe_id > 0)
 
