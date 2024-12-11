@@ -97,7 +97,7 @@ class Recipe_Book():
         assert (isinstance(group_name, str))
         query: Query = Queries.insert_recipe_group_query(group_name)
         self.__database.run_query(query)
-        recipe_group_id: int | None = self.__database.get_last_row_id()
+        recipe_group_id: int | None = self.__database.last_row_id
         assert (recipe_group_id is not None)
 
         return recipe_group_id
@@ -123,7 +123,7 @@ class Recipe_Book():
 
         query: Query = Queries.insert_recipe_query(recipe_group_id, recipe_name, required_time_minutes)
         self.__database.run_query(query)
-        recipe_id: int | None = self.__database.get_last_row_id()
+        recipe_id: int | None = self.__database.last_row_id
         assert (recipe_id is not None)
 
         return recipe_id
@@ -141,7 +141,7 @@ class Recipe_Book():
         assert (isinstance(tool_name, str))
         query: Query = Queries.insert_tool_query(tool_name)
         self.__database.run_query(query)
-        tool_id: int | None = self.__database.get_last_row_id()
+        tool_id: int | None = self.__database.last_row_id
         assert (tool_id is not None)
 
         return tool_id
@@ -157,9 +157,9 @@ class Recipe_Book():
             int: the ID of the picture in the pictures table
         """
         assert (isinstance(picture, bytes))
-        query: Query = Queries.insert_picture_query()
-        self.__database.run_query_insert_blob(query, (picture,))
-        picture_id: int | None = self.__database.get_last_row_id()
+        query: Query = Queries.insert_picture_query(picture)
+        self.__database.run_query(query)
+        picture_id: int | None = self.__database.last_row_id
         assert (picture_id is not None)
 
         return picture_id
@@ -177,7 +177,7 @@ class Recipe_Book():
         assert (isinstance(instruction, str))
         query: Query = Queries.insert_instruction_query(instruction)
         self.__database.run_query(query)
-        instruction_id: int | None = self.__database.get_last_row_id()
+        instruction_id: int | None = self.__database.last_row_id
         assert (instruction_id is not None)
 
         return instruction_id
@@ -202,7 +202,7 @@ class Recipe_Book():
         assert (nutrition_info_id > 0)
         query: Query = Queries.insert_ingredient_query(ingredient_type_id, ingredient_brand_id, nutrition_info_id)
         self.__database.run_query(query)
-        ingredient_id: int | None = self.__database.get_last_row_id()
+        ingredient_id: int | None = self.__database.last_row_id
         assert (ingredient_id is not None)
 
         return ingredient_id
@@ -220,7 +220,7 @@ class Recipe_Book():
         assert (isinstance(ingredient_type_name, str))
         query: Query = Queries.insert_ingredient_type_query(ingredient_type_name)
         self.__database.run_query(query)
-        ingredient_type_id: int | None = self.__database.get_last_row_id()
+        ingredient_type_id: int | None = self.__database.last_row_id
         assert (ingredient_type_id is not None)
 
         return ingredient_type_id
@@ -238,7 +238,7 @@ class Recipe_Book():
         assert (isinstance(ingredient_brand_name, str))
         query: Query = Queries.insert_ingredient_brand_query(ingredient_brand_name)
         self.__database.run_query(query)
-        ingredient_brand_id: int | None = self.__database.get_last_row_id()
+        ingredient_brand_id: int | None = self.__database.last_row_id
         assert (ingredient_brand_id is not None)
 
         return ingredient_brand_id
@@ -308,7 +308,7 @@ class Recipe_Book():
                 nutrition_info.milligrams_of_chloride_per_kilogram
         )
         self.__database.run_query(query)
-        nutrition_info_id: int | None = self.__database.get_last_row_id()
+        nutrition_info_id: int | None = self.__database.last_row_id
         assert (nutrition_info_id is not None)
 
         return nutrition_info_id
@@ -333,7 +333,7 @@ class Recipe_Book():
         assert (amount_grams > 0)
         query: Query = Queries.insert_recipe_ingredient_query(recipe_id, ingredient_id, amount_grams)
         self.__database.run_query(query)
-        recipe_ingredient_id: int | None = self.__database.get_last_row_id()
+        recipe_ingredient_id: int | None = self.__database.last_row_id
         assert (recipe_ingredient_id is not None)
 
         return recipe_ingredient_id
@@ -358,7 +358,7 @@ class Recipe_Book():
         assert (instruction_number > 0)
         query: Query = Queries.insert_recipe_instruction_query(recipe_id, instruction_id, instruction_number)
         self.__database.run_query(query)
-        recipe_instruction_id: int | None = self.__database.get_last_row_id()
+        recipe_instruction_id: int | None = self.__database.last_row_id
         assert (recipe_instruction_id is not None)
 
         return recipe_instruction_id
@@ -380,7 +380,7 @@ class Recipe_Book():
         assert (picture_id > 0)
         query: Query = Queries.insert_recipe_picture_query(recipe_id, picture_id)
         self.__database.run_query(query)
-        recipe_picture_id: int | None = self.__database.get_last_row_id()
+        recipe_picture_id: int | None = self.__database.last_row_id
         assert (recipe_picture_id is not None)
 
         return recipe_picture_id
@@ -402,7 +402,7 @@ class Recipe_Book():
         assert (tool_id > 0)
         query: Query = Queries.insert_recipe_tool_query(recipe_id, tool_id)
         self.__database.run_query(query)
-        recipe_tool_id: int | None = self.__database.get_last_row_id()
+        recipe_tool_id: int | None = self.__database.last_row_id
         assert (recipe_tool_id is not None)
 
         return recipe_tool_id
@@ -480,7 +480,7 @@ class Recipe_Book():
         assert (isinstance(recipe_id, int))
         assert (recipe_id > 0)
 
-        query: Query = Queries.get_tools_query(recipe_id)
+        query: Query = Queries.get_tools_in_recipe_query(recipe_id)
         results: list[sqlite3.Row] = self.__database.run_query(query)
         tools: list[Tool] = [result["name"] for result in results]
 
@@ -498,7 +498,7 @@ class Recipe_Book():
         assert (isinstance(recipe_id, int))
         assert (recipe_id > 0)
 
-        query: Query = Queries.get_pictures_query(recipe_id)
+        query: Query = Queries.get_pictures_in_recipe_query(recipe_id)
         results: list[sqlite3.Row] = self.__database.run_query(query)
         pictures: list[Picture] = [result["picture"] for result in results]
 
@@ -517,7 +517,7 @@ class Recipe_Book():
         assert (recipe_id > 0)
 
         unsorted_instructions: list[tuple[int, Instruction]] = []
-        query: Query = Queries.get_instructions_query(recipe_id)
+        query: Query = Queries.get_instructions_in_recipe_query(recipe_id)
         results: list[sqlite3.Row] = self.__database.run_query(query)
         for result in results:
             instruction_number: int = result["instruction_number"]
@@ -541,7 +541,7 @@ class Recipe_Book():
         assert (recipe_id > 0)
 
         ingredients: list[Ingredient] = []
-        query: Query = Queries.get_ingredients_query(recipe_id)
+        query: Query = Queries.get_ingredients_in_recipe_query(recipe_id)
         results: list[sqlite3.Row] = self.__database.run_query(query)
         for result in results:
             ingredient_type: Ingredient_Type = result["ingredient_type"]

@@ -1,28 +1,27 @@
 import datetime
-
-Query = str
+from data_types.query import Query
 
 class Queries():
     @staticmethod
     def enable_foreign_keys_query() -> Query:
-        query: Query = "PRAGMA foreign_keys = ON;"
+        query: Query = Query("PRAGMA foreign_keys = ON;")
 
         return query
 
     @staticmethod
     def create_table_recipe_groups_query() -> Query:
-        query: Query = """
+        query: Query = Query("""
             CREATE TABLE IF NOT EXISTS `recipe_groups` (
                 `recipe_group_id` INTEGER NOT NULL PRIMARY KEY,
                 `name` TEXT NOT NULL UNIQUE
             );
-        """
+        """)
 
         return query
 
     @staticmethod
     def create_table_recipes_query() -> Query:
-        query: Query = """
+        query: Query = Query("""
             CREATE TABLE IF NOT EXISTS `recipes` (
                 `recipe_id` INTEGER NOT NULL PRIMARY KEY,
                 `recipe_group_id` INTEGER NOT NULL,
@@ -33,46 +32,46 @@ class Queries():
                     ON DELETE CASCADE
                     ON UPDATE CASCADE
             );
-        """
+        """)
 
         return query
 
     @staticmethod
     def create_table_tools_query() -> Query:
-        query: Query = """
+        query: Query = Query("""
             CREATE TABLE IF NOT EXISTS `tools` (
                 `tool_id` INTEGER NOT NULL PRIMARY KEY,
                 `name` TEXT NOT NULL UNIQUE
             );
-        """
+        """)
 
         return query
 
     @staticmethod
     def create_table_ingredient_types_query() -> Query:
-        query: Query = """
+        query: Query = Query("""
             CREATE TABLE IF NOT EXISTS `ingredient_types` (
                 `ingredient_type_id` INTEGER NOT NULL PRIMARY KEY,
                 `ingredient_type` TEXT NOT NULL UNIQUE
             );
-        """
+        """)
 
         return query
 
     @staticmethod
     def create_table_ingredient_brands_query() -> Query:
-        query: Query = """
+        query: Query = Query("""
             CREATE TABLE IF NOT EXISTS `ingredient_brands` (
                 `ingredient_brand_id` INTEGER NOT NULL PRIMARY KEY,
                 `name` TEXT NOT NULL UNIQUE
             );
-        """
+        """)
 
         return query
 
     @staticmethod
     def create_table_nutrition_info_query() -> Query:
-        query: Query = """
+        query: Query = Query("""
             CREATE TABLE IF NOT EXISTS `nutrition_info` (
                 `nutrition_info_id` INTEGER NOT NULL PRIMARY KEY,
                 `l_per_kg` REAL NOT NULL,
@@ -127,35 +126,35 @@ class Queries():
                 `is_nut` INTEGER NOT NULL CHECK (is_nut IN (0, 1)),
                 `is_soy` INTEGER NOT NULL CHECK (is_soy IN (0, 1))
             );
-        """
+        """)
 
         return query
 
     @staticmethod
     def create_table_pictures_query() -> Query:
-        query: Query = """
+        query: Query = Query("""
             CREATE TABLE IF NOT EXISTS `pictures` (
                 `picture_id` INTEGER NOT NULL PRIMARY KEY,
                 `picture` BLOB NOT NULL
             );
-        """
+        """)
 
         return query
 
     @staticmethod
     def create_table_instructions_query() -> Query:
-        query: Query = """
+        query: Query = Query("""
             CREATE TABLE IF NOT EXISTS `instructions` (
                 `instruction_id` INTEGER NOT NULL PRIMARY KEY,
                 `instruction` TEXT NOT NULL
             );
-        """
+        """)
 
         return query
 
     @staticmethod
     def create_table_ingredients_query() -> Query:
-        query: Query = """
+        query: Query = Query("""
             CREATE TABLE IF NOT EXISTS `ingredients` (
                 `ingredient_id` INTEGER NOT NULL PRIMARY KEY,
                 `ingredient_type_id` INTEGER NOT NULL,
@@ -174,13 +173,13 @@ class Queries():
                     ON DELETE CASCADE
                     ON UPDATE CASCADE
             );
-        """
+        """)
 
         return query
 
     @staticmethod
     def create_table_recipe_usage_query() -> Query:
-        query: Query = """
+        query: Query = Query("""
             CREATE TABLE IF NOT EXISTS `recipe_usage` (
                 `recipe_usage_id` INTEGER NOT NULL PRIMARY KEY,
                 `recipe_id` INTEGER NOT NULL,
@@ -190,13 +189,13 @@ class Queries():
                     ON DELETE CASCADE
                     ON UPDATE CASCADE
             );
-        """
+        """)
 
         return query
 
     @staticmethod
     def create_table_recipes_ingredients_query() -> Query:
-        query: Query = """
+        query: Query = Query("""
             CREATE TABLE IF NOT EXISTS `recipes_ingredients` (
                 `recipe_ingredients_id` INTEGER NOT NULL PRIMARY KEY,
                 `recipe_id` INTEGER NOT NULL,
@@ -211,13 +210,13 @@ class Queries():
                     ON DELETE CASCADE
                     ON UPDATE CASCADE
             );
-        """
+        """)
 
         return query
 
     @staticmethod
     def create_table_recipes_tools_query() -> Query:
-        query: Query = """
+        query: Query = Query("""
             CREATE TABLE IF NOT EXISTS `recipes_tools` (
                 `recipe_tools_id` INTEGER NOT NULL PRIMARY KEY,
                 `recipe_id` INTEGER NOT NULL,
@@ -231,13 +230,13 @@ class Queries():
                     ON DELETE CASCADE
                     ON UPDATE CASCADE
             );
-        """
+        """)
 
         return query
 
     @staticmethod
     def create_table_recipes_pictures_query() -> Query:
-        query: Query = """
+        query: Query = Query("""
             CREATE TABLE IF NOT EXISTS `recipes_pictures` (
                 `recipe_pictures_id` INTEGER NOT NULL PRIMARY KEY,
                 `recipe_id` INTEGER NOT NULL,
@@ -251,13 +250,13 @@ class Queries():
                     ON DELETE CASCADE
                     ON UPDATE CASCADE
             );
-        """
+        """)
 
         return query
 
     @staticmethod
     def create_table_recipes_instructions_query() -> Query:
-        query: Query = """
+        query: Query = Query("""
             CREATE TABLE IF NOT EXISTS `recipes_instructions` (
                 `recipe_instructions_id` INTEGER NOT NULL PRIMARY KEY,
                 `recipe_id` INTEGER NOT NULL,
@@ -272,7 +271,7 @@ class Queries():
                     ON DELETE CASCADE
                     ON UPDATE CASCADE
             );
-        """
+        """)
 
         return query
 
@@ -305,18 +304,16 @@ class Queries():
         assert (isinstance(group_name, str))
         group_name = group_name.replace('"', "")
 
-        query: Query = """
+        query: Query = Query("""
             INSERT INTO `recipe_groups`
             (
                 `name`
             )
             VALUES
             (
-                "{group_name}"
+                ?
             );
-        """.format(
-            group_name = group_name
-        )
+        """, (group_name,))
 
         return query
 
@@ -330,7 +327,7 @@ class Queries():
         if (isinstance(required_time_minutes, int)):
             assert (required_time_minutes > 0)
 
-        query: Query = """
+        query: Query = Query("""
             INSERT INTO `recipes`
             (
                 `recipe_group_id`,
@@ -339,15 +336,11 @@ class Queries():
             )
             VALUES
             (
-                {recipe_group_id},
-                "{recipe_name}",
-                {required_time_minutes}
+                ?,
+                ?,
+                ?
             );
-        """.format(
-            recipe_group_id = recipe_group_id,
-            recipe_name = recipe_name,
-            required_time_minutes = required_time_minutes
-        )
+        """, (recipe_group_id, recipe_name, required_time_minutes))
 
         return query
 
@@ -356,18 +349,16 @@ class Queries():
         assert (isinstance(tool_name, str))
         tool_name = tool_name.replace('"', "")
 
-        query: Query = """
+        query: Query = Query("""
             INSERT INTO `tools`
             (
                 `name`
             )
             VALUES
             (
-                "{tool_name}"
+                ?
             );
-        """.format(
-            tool_name = tool_name
-        )
+        """, (tool_name,))
 
         return query
 
@@ -376,18 +367,16 @@ class Queries():
         assert (isinstance(ingredient_type, str))
         ingredient_type = ingredient_type.replace('"', "")
 
-        query: Query = """
+        query: Query = Query("""
             INSERT INTO `ingredient_types`
             (
                 `ingredient_type`
             )
             VALUES
             (
-                "{ingredient_type}"
+                ?
             );
-        """.format(
-            ingredient_type = ingredient_type
-        )
+        """, (ingredient_type,))
 
         return query
 
@@ -396,18 +385,16 @@ class Queries():
         assert (isinstance(ingredient_brand, str))
         ingredient_brand = ingredient_brand.replace('"', "")
 
-        query: Query = """
+        query: Query = Query("""
             INSERT INTO `ingredient_brands`
             (
                 `name`
             )
             VALUES
             (
-                "{ingredient_brand}"
+                ?
             );
-        """.format(
-            ingredient_brand = ingredient_brand
-        )
+        """, (ingredient_brand,))
 
         return query
 
@@ -518,7 +505,7 @@ class Queries():
         assert (isinstance(is_soy, bool))
         # TODO could also assert that these are all positive numbers
 
-        query: Query = """
+        query: Query = Query("""
             INSERT INTO `nutrition_info`
             (
                 `l_per_kg`,
@@ -575,127 +562,127 @@ class Queries():
             )
             VALUES
             (
-                {litres_per_kilogram},
-                {kilocalories_per_kilogram},
-                {grams_of_fat_per_kilogram},
-                {grams_of_saturated_fat_per_kilogram},
-                {grams_of_trans_fat_per_kilogram},
-                {grams_of_omega6_polyunsaturated_fat_per_kilogram},
-                {grams_of_omega3_polyunsaturated_fat_per_kilogram},
-                {grams_of_monounsaturated_fat_per_kilogram},
-                {grams_of_carbohydrate_per_kilogram},
-                {grams_of_dietary_fibre_per_kilogram},
-                {grams_of_soluble_fibre_per_kilogram},
-                {grams_of_insoluble_fibre_per_kilogram},
-                {grams_of_sugars_per_kilogram},
-                {grams_of_sugar_alcohols_per_kilogram},
-                {grams_of_starch_per_kilogram},
-                {grams_of_protein_per_kilogram},
-                {grams_of_cholesterol_per_kilogram},
-                {milligrams_of_sodium_per_kilogram},
-                {milligrams_of_potassium_per_kilogram},
-                {milligrams_of_calcium_per_kilogram},
-                {milligrams_of_iron_per_kilogram},
-                {micrograms_of_vitamin_a_per_kilogram},
-                {milligrams_of_vitamin_c_per_kilogram},
-                {micrograms_of_vitamin_d_per_kilogram},
-                {milligrams_of_vitamin_e_per_kilogram},
-                {micrograms_of_vitamin_k_per_kilogram},
-                {milligrams_of_thiamine_per_kilogram},
-                {milligrams_of_riboflavin_per_kilogram},
-                {milligrams_of_niacin_per_kilogram},
-                {milligrams_of_vitamin_b6_per_kilogram},
-                {micrograms_of_folate_per_kilogram},
-                {micrograms_of_vitamin_b12_per_kilogram},
-                {micrograms_of_biotin_per_kilogram},
-                {milligrams_of_pantothenate_per_kilogram},
-                {milligrams_of_choline_per_kilogram},
-                {milligrams_of_phosphorous_per_kilogram},
-                {micrograms_of_iodide_per_kilograms},
-                {milligrams_of_magnesium_per_kilogram},
-                {milligrams_of_zinc_per_kilogram},
-                {micrograms_of_selenium_per_kilogram},
-                {milligrams_of_copper_per_kilogram},
-                {milligrams_of_manganese_per_kilogram},
-                {micrograms_of_chromium_per_kilogram},
-                {micrograms_of_molybdenum_per_kilogram},
-                {milligrams_of_chloride_per_kilogram},
-                {has_gluten},
-                {is_meat},
-                {is_dairy},
-                {is_animal_product},
-                {is_nut},
-                {is_soy}
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?
             );
-        """.format(
-            litres_per_kilogram = litres_per_kilogram,
-            kilocalories_per_kilogram = kilocalories_per_kilogram,
-            grams_of_fat_per_kilogram = grams_of_fat_per_kilogram,
-            grams_of_saturated_fat_per_kilogram = grams_of_saturated_fat_per_kilogram,
-            grams_of_trans_fat_per_kilogram = grams_of_trans_fat_per_kilogram,
-            grams_of_omega6_polyunsaturated_fat_per_kilogram = "NULL" if grams_of_omega6_polyunsaturated_fat_per_kilogram is None else grams_of_omega6_polyunsaturated_fat_per_kilogram,
-            grams_of_omega3_polyunsaturated_fat_per_kilogram = "NULL" if grams_of_omega3_polyunsaturated_fat_per_kilogram is None else grams_of_omega3_polyunsaturated_fat_per_kilogram,
-            grams_of_monounsaturated_fat_per_kilogram = "NULL" if grams_of_monounsaturated_fat_per_kilogram is None else grams_of_monounsaturated_fat_per_kilogram,
-            grams_of_carbohydrate_per_kilogram = grams_of_carbohydrate_per_kilogram,
-            grams_of_dietary_fibre_per_kilogram = grams_of_dietary_fibre_per_kilogram,
-            grams_of_soluble_fibre_per_kilogram = "NULL" if grams_of_soluble_fibre_per_kilogram is None else grams_of_soluble_fibre_per_kilogram,
-            grams_of_insoluble_fibre_per_kilogram = "NULL" if grams_of_insoluble_fibre_per_kilogram is None else grams_of_insoluble_fibre_per_kilogram,
-            grams_of_sugars_per_kilogram = grams_of_sugars_per_kilogram,
-            grams_of_sugar_alcohols_per_kilogram = "NULL" if grams_of_sugar_alcohols_per_kilogram is None else grams_of_sugar_alcohols_per_kilogram,
-            grams_of_starch_per_kilogram = "NULL" if grams_of_starch_per_kilogram is None else grams_of_starch_per_kilogram,
-            grams_of_protein_per_kilogram = grams_of_protein_per_kilogram,
-            grams_of_cholesterol_per_kilogram = grams_of_cholesterol_per_kilogram,
-            milligrams_of_sodium_per_kilogram = milligrams_of_sodium_per_kilogram,
-            milligrams_of_potassium_per_kilogram = milligrams_of_potassium_per_kilogram,
-            milligrams_of_calcium_per_kilogram = milligrams_of_calcium_per_kilogram,
-            milligrams_of_iron_per_kilogram = milligrams_of_iron_per_kilogram,
-            micrograms_of_vitamin_a_per_kilogram = "NULL" if micrograms_of_vitamin_a_per_kilogram is None else micrograms_of_vitamin_a_per_kilogram,
-            milligrams_of_vitamin_c_per_kilogram = "NULL" if milligrams_of_vitamin_c_per_kilogram is None else milligrams_of_vitamin_c_per_kilogram,
-            micrograms_of_vitamin_d_per_kilogram = "NULL" if micrograms_of_vitamin_d_per_kilogram is None else micrograms_of_vitamin_d_per_kilogram,
-            milligrams_of_vitamin_e_per_kilogram = "NULL" if milligrams_of_vitamin_e_per_kilogram is None else milligrams_of_vitamin_e_per_kilogram,
-            micrograms_of_vitamin_k_per_kilogram = "NULL" if micrograms_of_vitamin_k_per_kilogram is None else micrograms_of_vitamin_k_per_kilogram,
-            milligrams_of_thiamine_per_kilogram = "NULL" if milligrams_of_thiamine_per_kilogram is None else milligrams_of_thiamine_per_kilogram,
-            milligrams_of_riboflavin_per_kilogram = "NULL" if milligrams_of_riboflavin_per_kilogram is None else milligrams_of_riboflavin_per_kilogram,
-            milligrams_of_niacin_per_kilogram = "NULL" if milligrams_of_niacin_per_kilogram is None else milligrams_of_niacin_per_kilogram,
-            milligrams_of_vitamin_b6_per_kilogram = "NULL" if milligrams_of_vitamin_b6_per_kilogram is None else milligrams_of_vitamin_b6_per_kilogram,
-            micrograms_of_folate_per_kilogram = "NULL" if micrograms_of_folate_per_kilogram is None else micrograms_of_folate_per_kilogram,
-            micrograms_of_vitamin_b12_per_kilogram = "NULL" if micrograms_of_vitamin_b12_per_kilogram is None else micrograms_of_vitamin_b12_per_kilogram,
-            micrograms_of_biotin_per_kilogram = "NULL" if micrograms_of_biotin_per_kilogram is None else micrograms_of_biotin_per_kilogram,
-            milligrams_of_pantothenate_per_kilogram = "NULL" if milligrams_of_pantothenate_per_kilogram is None else milligrams_of_pantothenate_per_kilogram,
-            milligrams_of_choline_per_kilogram = "NULL" if milligrams_of_choline_per_kilogram is None else milligrams_of_choline_per_kilogram,
-            milligrams_of_phosphorous_per_kilogram = "NULL" if milligrams_of_phosphorous_per_kilogram is None else milligrams_of_phosphorous_per_kilogram,
-            micrograms_of_iodide_per_kilograms = "NULL" if micrograms_of_iodide_per_kilograms is None else micrograms_of_iodide_per_kilograms,
-            milligrams_of_magnesium_per_kilogram = "NULL" if milligrams_of_magnesium_per_kilogram is None else milligrams_of_magnesium_per_kilogram,
-            milligrams_of_zinc_per_kilogram = "NULL" if milligrams_of_zinc_per_kilogram is None else milligrams_of_zinc_per_kilogram,
-            micrograms_of_selenium_per_kilogram = "NULL" if micrograms_of_selenium_per_kilogram is None else micrograms_of_selenium_per_kilogram,
-            milligrams_of_copper_per_kilogram = "NULL" if milligrams_of_copper_per_kilogram is None else milligrams_of_copper_per_kilogram,
-            milligrams_of_manganese_per_kilogram = "NULL" if milligrams_of_manganese_per_kilogram is None else milligrams_of_manganese_per_kilogram,
-            micrograms_of_chromium_per_kilogram = "NULL" if micrograms_of_chromium_per_kilogram is None else micrograms_of_chromium_per_kilogram,
-            micrograms_of_molybdenum_per_kilogram = "NULL" if micrograms_of_molybdenum_per_kilogram is None else micrograms_of_molybdenum_per_kilogram,
-            milligrams_of_chloride_per_kilogram = "NULL" if milligrams_of_chloride_per_kilogram is None else milligrams_of_chloride_per_kilogram,
-            has_gluten = 1 if has_gluten else 0,
-            is_meat = 1 if is_meat else 0,
-            is_dairy = 1 if is_dairy else 0,
-            is_animal_product = 1 if is_animal_product else 0,
-            is_nut = 1 if is_nut else 0,
-            is_soy = 1 if is_soy else 0
-        )
+        """, (
+            litres_per_kilogram,
+            kilocalories_per_kilogram,
+            grams_of_fat_per_kilogram,
+            grams_of_saturated_fat_per_kilogram,
+            grams_of_trans_fat_per_kilogram,
+            "NULL" if grams_of_omega6_polyunsaturated_fat_per_kilogram is None else grams_of_omega6_polyunsaturated_fat_per_kilogram,
+            "NULL" if grams_of_omega3_polyunsaturated_fat_per_kilogram is None else grams_of_omega3_polyunsaturated_fat_per_kilogram,
+            "NULL" if grams_of_monounsaturated_fat_per_kilogram is None else grams_of_monounsaturated_fat_per_kilogram,
+            grams_of_carbohydrate_per_kilogram,
+            grams_of_dietary_fibre_per_kilogram,
+            "NULL" if grams_of_soluble_fibre_per_kilogram is None else grams_of_soluble_fibre_per_kilogram,
+            "NULL" if grams_of_insoluble_fibre_per_kilogram is None else grams_of_insoluble_fibre_per_kilogram,
+            grams_of_sugars_per_kilogram,
+            "NULL" if grams_of_sugar_alcohols_per_kilogram is None else grams_of_sugar_alcohols_per_kilogram,
+            "NULL" if grams_of_starch_per_kilogram is None else grams_of_starch_per_kilogram,
+            grams_of_protein_per_kilogram,
+            grams_of_cholesterol_per_kilogram,
+            milligrams_of_sodium_per_kilogram,
+            milligrams_of_potassium_per_kilogram,
+            milligrams_of_calcium_per_kilogram,
+            milligrams_of_iron_per_kilogram,
+            "NULL" if micrograms_of_vitamin_a_per_kilogram is None else micrograms_of_vitamin_a_per_kilogram,
+            "NULL" if milligrams_of_vitamin_c_per_kilogram is None else milligrams_of_vitamin_c_per_kilogram,
+            "NULL" if micrograms_of_vitamin_d_per_kilogram is None else micrograms_of_vitamin_d_per_kilogram,
+            "NULL" if milligrams_of_vitamin_e_per_kilogram is None else milligrams_of_vitamin_e_per_kilogram,
+            "NULL" if micrograms_of_vitamin_k_per_kilogram is None else micrograms_of_vitamin_k_per_kilogram,
+            "NULL" if milligrams_of_thiamine_per_kilogram is None else milligrams_of_thiamine_per_kilogram,
+            "NULL" if milligrams_of_riboflavin_per_kilogram is None else milligrams_of_riboflavin_per_kilogram,
+            "NULL" if milligrams_of_niacin_per_kilogram is None else milligrams_of_niacin_per_kilogram,
+            "NULL" if milligrams_of_vitamin_b6_per_kilogram is None else milligrams_of_vitamin_b6_per_kilogram,
+            "NULL" if micrograms_of_folate_per_kilogram is None else micrograms_of_folate_per_kilogram,
+            "NULL" if micrograms_of_vitamin_b12_per_kilogram is None else micrograms_of_vitamin_b12_per_kilogram,
+            "NULL" if micrograms_of_biotin_per_kilogram is None else micrograms_of_biotin_per_kilogram,
+            "NULL" if milligrams_of_pantothenate_per_kilogram is None else milligrams_of_pantothenate_per_kilogram,
+            "NULL" if milligrams_of_choline_per_kilogram is None else milligrams_of_choline_per_kilogram,
+            "NULL" if milligrams_of_phosphorous_per_kilogram is None else milligrams_of_phosphorous_per_kilogram,
+            "NULL" if micrograms_of_iodide_per_kilograms is None else micrograms_of_iodide_per_kilograms,
+            "NULL" if milligrams_of_magnesium_per_kilogram is None else milligrams_of_magnesium_per_kilogram,
+            "NULL" if milligrams_of_zinc_per_kilogram is None else milligrams_of_zinc_per_kilogram,
+            "NULL" if micrograms_of_selenium_per_kilogram is None else micrograms_of_selenium_per_kilogram,
+            "NULL" if milligrams_of_copper_per_kilogram is None else milligrams_of_copper_per_kilogram,
+            "NULL" if milligrams_of_manganese_per_kilogram is None else milligrams_of_manganese_per_kilogram,
+            "NULL" if micrograms_of_chromium_per_kilogram is None else micrograms_of_chromium_per_kilogram,
+            "NULL" if micrograms_of_molybdenum_per_kilogram is None else micrograms_of_molybdenum_per_kilogram,
+            "NULL" if milligrams_of_chloride_per_kilogram is None else milligrams_of_chloride_per_kilogram,
+            1 if has_gluten else 0,
+            1 if is_meat else 0,
+            1 if is_dairy else 0,
+            1 if is_animal_product else 0,
+            1 if is_nut else 0,
+            1 if is_soy else 0
+        ))
 
         return query
 
     @staticmethod
-    def insert_picture_query() -> Query:
+    def insert_picture_query(picture: bytes) -> Query:
 
-        query: Query = """
+        query: Query = Query("""
             INSERT INTO `pictures`
             (
                 `picture`
             )
             VALUES
             (
-                (?)
+                ?
             );
-        """
+        """, (picture,))
 
         return query
 
@@ -703,16 +690,16 @@ class Queries():
     def insert_instruction_query(instruction: str) -> Query:
         assert (isinstance(instruction, str))
 
-        query: Query = """
+        query: Query = Query("""
             INSERT INTO `instructions`
             (
                 `instruction`
             )
             VALUES
             (
-                "{instruction}"
+                ?
             );
-        """.format(instruction = instruction)
+        """, (instruction,))
 
         return query
 
@@ -725,7 +712,7 @@ class Queries():
         assert (isinstance(nutrition_info_id, int))
         assert (nutrition_info_id > 0)
 
-        query: Query = """
+        query: Query = Query("""
             INSERT INTO `ingredients`
             (
                 `ingredient_type_id`,
@@ -734,15 +721,11 @@ class Queries():
             )
             VALUES
             (
-                {ingredient_type_id},
-                {ingredient_brand_id},
-                {nutrition_info_id}
+                ?,
+                ?,
+                ?
             );
-        """.format(
-            ingredient_type_id = ingredient_type_id,
-            ingredient_brand_id = ingredient_brand_id,
-            nutrition_info_id = nutrition_info_id
-        )
+        """, (ingredient_type_id, ingredient_brand_id, nutrition_info_id))
 
         return query
 
@@ -752,7 +735,7 @@ class Queries():
         assert (recipe_id > 0)
         assert (isinstance(datetime_used, datetime.datetime))
 
-        query: Query = """
+        query: Query = Query("""
             INSERT INTO `recipe_usage`
             (
                 `recipe_id`,
@@ -760,13 +743,10 @@ class Queries():
             )
             VALUES
             (
-                {recipe_id},
-                "{datetime_used}"
+                ?,
+                ?
             );
-        """.format(
-            recipe_id = recipe_id,
-            datetime_used = datetime_used.strftime("%Y-%m-%d %H:%M:%S")
-        )
+        """, (recipe_id, datetime_used))
 
         return query
 
@@ -779,7 +759,7 @@ class Queries():
         assert (isinstance(amount_grams, int))
         assert (amount_grams > 0)
 
-        query: Query = """
+        query: Query = Query("""
             INSERT INTO `recipes_ingredients`
             (
                 `recipe_id`,
@@ -788,15 +768,11 @@ class Queries():
             )
             VALUES
             (
-                {recipe_id},
-                {ingredient_id},
-                {amount_grams}
+                ?,
+                ?,
+                ?
             );
-        """.format(
-            recipe_id = recipe_id,
-            ingredient_id = ingredient_id,
-            amount_grams = amount_grams
-        )
+        """, (recipe_id, ingredient_id, amount_grams))
 
         return query
 
@@ -807,7 +783,7 @@ class Queries():
         assert (isinstance(tool_id, int))
         assert (tool_id > 0)
 
-        query: Query = """
+        query: Query = Query("""
             INSERT INTO `recipes_tools`
             (
                 `recipe_id`,
@@ -815,13 +791,10 @@ class Queries():
             )
             VALUES
             (
-                {recipe_id},
-                {tool_id}
+                ?,
+                ?
             );
-        """.format(
-            recipe_id = recipe_id,
-            tool_id = tool_id
-        )
+        """, (recipe_id, tool_id))
 
         return query
 
@@ -832,7 +805,7 @@ class Queries():
         assert (isinstance(picture_id, int))
         assert (picture_id > 0)
 
-        query: Query = """
+        query: Query = Query("""
             INSERT INTO `recipes_pictures`
             (
                 `recipe_id`,
@@ -840,13 +813,10 @@ class Queries():
             )
             VALUES
             (
-                {recipe_id},
-                {picture_id}
+                ?,
+                ?
             );
-        """.format(
-            recipe_id = recipe_id,
-            picture_id = picture_id
-        )
+        """, (recipe_id, picture_id))
 
         return query
 
@@ -859,7 +829,7 @@ class Queries():
         assert (isinstance(instruction_number, int))
         assert (instruction_number > 0)
 
-        query: Query = """
+        query: Query = Query("""
             INSERT INTO `recipes_instructions`
             (
                 `recipe_id`,
@@ -868,27 +838,23 @@ class Queries():
             )
             VALUES
             (
-                {recipe_id},
-                {instruction_id},
-                {instruction_number}
+                ?,
+                ?,
+                ?
             );
-        """.format(
-            recipe_id = recipe_id,
-            instruction_id = instruction_id,
-            instruction_number = instruction_number
-        )
+        """, (recipe_id, instruction_id, instruction_number))
 
         return query
 
     @staticmethod
     def get_recipe_groups_query() -> Query:
-        query: Query = """
+        query: Query = Query("""
             SELECT
                 `recipe_group_id`,
                 `name`
             FROM
                 `recipe_groups`;
-        """
+        """)
 
         return query
 
@@ -896,7 +862,7 @@ class Queries():
     def get_recipe_group_query(recipe_id: int) -> Query:
         assert (isinstance(recipe_id, int))
         assert (recipe_id > 0)
-        query: Query = """
+        query: Query = Query("""
             SELECT
                 `recipe_groups`.`recipe_group_id`,
                 `recipe_groups`.`name`
@@ -907,41 +873,16 @@ class Queries():
             ON
                 `recipe_groups`.`recipe_group_id` = `recipes`.`recipe_group_id`
             WHERE
-                `recipes`.`recipe_id` = {recipe_id};
-        """.format(recipe_id = recipe_id)
+                `recipes`.`recipe_id` = ?;
+        """, (recipe_id,))
 
         return query
 
     @staticmethod
-    def get_recipes_query(recipe_group_id: int | None = None) -> Query:
-        assert (isinstance(recipe_group_id, int) or recipe_group_id is None)
-        if (isinstance(recipe_group_id, int)):
-            assert (recipe_group_id > 0)
-        query: Query = """
-            SELECT
-                `recipe_id`,
-                `recipe_group_id`,
-                `name`,
-                `required_time_minutes`
-            FROM
-                `recipes`
-            {where_recipe_group_id};
-        """
-        where_recipe_group_id: Query = ""
-        if (recipe_group_id is not None):
-            where_recipe_group_id = """
-                WHERE
-                    `recipe_group_id` = {recipe_group_id}
-            """.format(recipe_group_id = recipe_group_id)
-        query = query.format(where_recipe_group_id = where_recipe_group_id)
-
-        return query
-
-    @staticmethod
-    def get_recipe_query(recipe_id: int) -> Query:
-        assert (isinstance(recipe_id, int))
-        assert (recipe_id > 0)
-        query: Query = """
+    def get_recipes_in_group_query(recipe_group_id: int) -> Query:
+        assert (isinstance(recipe_group_id, int))
+        assert (recipe_group_id > 0)
+        query: Query = Query("""
             SELECT
                 `recipe_id`,
                 `recipe_group_id`,
@@ -950,79 +891,120 @@ class Queries():
             FROM
                 `recipes`
             WHERE
-                `recipe_id` = {recipe_id};
-        """.format(recipe_id = recipe_id)
+                `recipe_group_id` = ?;
+        """, (recipe_group_id,))
 
         return query
 
     @staticmethod
-    def get_tools_query(recipe_id: int | None = None) -> Query:
-        assert (isinstance(recipe_id, int) or recipe_id is None)
-        if (isinstance(recipe_id, int)):
-            assert (recipe_id > 0)
-        query: Query = """
+    def get_recipes_query() -> Query:
+        query: Query = Query("""
+            SELECT
+                `recipe_id`,
+                `recipe_group_id`,
+                `name`,
+                `required_time_minutes`
+            FROM
+                `recipes`;
+        """)
+
+        return query
+
+    @staticmethod
+    def get_recipe_query(recipe_id: int) -> Query:
+        assert (isinstance(recipe_id, int))
+        assert (recipe_id > 0)
+        query: Query = Query("""
+            SELECT
+                `recipe_id`,
+                `recipe_group_id`,
+                `name`,
+                `required_time_minutes`
+            FROM
+                `recipes`
+            WHERE
+                `recipe_id` = ?;
+        """, (recipe_id,))
+
+        return query
+
+    @staticmethod
+    def get_tools_in_recipe_query(recipe_id: int) -> Query:
+        assert (isinstance(recipe_id, int))
+        assert (recipe_id > 0)
+        query: Query = Query("""
             SELECT
                 `tools`.`tool_id`,
                 `tools`.`name`
             FROM
                 `tools`
-            {where_recipe_id};
-        """
-        where_recipe_id: Query = ""
-        if (recipe_id is not None):
-            where_recipe_id = """
-                JOIN
-                    `recipes_tools`
-                ON
-                    `recipes_tools`.`tool_id` = `tools`.`tool_id`
-                WHERE
-                    `recipe_id` = {recipe_id}
-            """.format(
-                recipe_id = recipe_id
-            )
-        query = query.format(
-            where_recipe_id = where_recipe_id
-        )
+            JOIN
+                `recipes_tools`
+            ON
+                `recipes_tools`.`tool_id` = `tools`.`tool_id`
+            WHERE
+                `recipe_id` = ?;
+        """, (recipe_id,))
 
         return query
 
     @staticmethod
-    def get_pictures_query(recipe_id: int | None = None) -> Query:
-        assert (isinstance(recipe_id, int) or recipe_id is None)
-        if (isinstance(recipe_id, int)):
-            assert (recipe_id > 0)
-        query: Query = """
+    def get_tools_query() -> Query:
+        query: Query = Query("""
+            SELECT
+                `tools`.`tool_id`,
+                `tools`.`name`
+            FROM
+                `tools`
+            JOIN
+                `recipes_tools`
+            ON
+                `recipes_tools`.`tool_id` = `tools`.`tool_id`;
+        """)
+
+        return query
+
+    @staticmethod
+    def get_pictures_in_recipe_query(recipe_id: int) -> Query:
+        assert (isinstance(recipe_id, int))
+        assert (recipe_id > 0)
+        query: Query = Query("""
             SELECT
                 `pictures`.`picture_id`,
                 `pictures`.`picture`
             FROM
                 `pictures`
-            {where_recipe_id};
-        """
-        where_recipe_id: Query = ""
-        if (recipe_id is not None):
-            where_recipe_id = """
-                JOIN
-                    `recipes_pictures`
-                ON
-                    `recipes_pictures`.`picture_id` = `pictures`.`picture_id`
-                WHERE
-                    `recipe_id` = {recipe_id}
-            """.format(
-                recipe_id = recipe_id
-            )
-        query = query.format(
-            where_recipe_id = where_recipe_id
-        )
+            JOIN
+                `recipes_pictures`
+            ON
+                `recipes_pictures`.`picture_id` = `pictures`.`picture_id`
+            WHERE
+                `recipe_id` = ?;
+        """, (recipe_id,))
 
         return query
 
     @staticmethod
-    def get_instructions_query(recipe_id: int | None = None) -> Query:
-        assert (isinstance(recipe_id, int) or recipe_id is None)
-        if (isinstance(recipe_id, int)):
-            assert (recipe_id > 0)
-        query: Query = """
+    def get_pictures_query() -> Query:
+        query: Query = Query("""
+            SELECT
+                `pictures`.`picture_id`,
+                `pictures`.`picture`
+            FROM
+                `pictures`
+            JOIN
+                `recipes_pictures`
+            ON
+                `recipes_pictures`.`picture_id` = `pictures`.`picture_id`;
+        """)
+
+        return query
+
+    @staticmethod
+    def get_instructions_in_recipe_query(recipe_id: int) -> Query:
+        assert (isinstance(recipe_id, int))
+        assert (recipe_id > 0)
+        query: Query = Query("""
             SELECT
                 `instructions`.`instruction_id`,
                 `instruction`,
@@ -1033,31 +1015,37 @@ class Queries():
                 `recipes_instructions`
             ON
                 `recipes_instructions`.`instruction_id` = `instructions`.`instruction_id`
-            {where_recipe_id};
-        """
-        where_recipe_id: Query = ""
-        if (recipe_id is not None):
-            where_recipe_id = """
-                WHERE
-                    `recipe_id` = {recipe_id}
-            """.format(
-                recipe_id = recipe_id
-            )
-        query = query.format(
-            where_recipe_id = where_recipe_id
-        )
+            WHERE
+                `recipe_id` = ?;
+        """, (recipe_id,))
 
         return query
 
     @staticmethod
-    def get_ingredients_query(recipe_id: int | None = None) -> Query:
-        assert (isinstance(recipe_id, int) or recipe_id is None)
-        if (isinstance(recipe_id, int)):
-            assert (recipe_id > 0)
-        query: Query = """
+    def get_instructions_query() -> Query:
+        query: Query = Query("""
+            SELECT
+                `instructions`.`instruction_id`,
+                `instruction`,
+                `instruction_number`
+            FROM
+                `instructions`
+            JOIN
+                `recipes_instructions`
+            ON
+                `recipes_instructions`.`instruction_id` = `instructions`.`instruction_id`;
+        """)
+
+        return query
+
+    @staticmethod
+    def get_ingredients_in_recipe_query(recipe_id: int) -> Query:
+        assert (isinstance(recipe_id, int))
+        assert (recipe_id > 0)
+        query: Query = Query("""
             SELECT
                 `ingredients`.`ingredient_id`,
-                {amount_grams}
+                `recipes_ingredients`.`amount_g` AS amount_grams,
                 `ingredients`.`ingredient_type_id`,
                 `ingredient_types`.`ingredient_type`,
                 `ingredients`.`ingredient_brand_id`,
@@ -1078,50 +1066,71 @@ class Queries():
                 `nutrition_info`
             ON
                 `nutrition_info`.`nutrition_info_id` = `ingredients`.`nutrition_info_id`
-            {where_recipe_id};
-        """
-        where_recipe_id: Query = ""
-        if (recipe_id is not None):
-            where_recipe_id = """
-                JOIN
-                    `recipes_ingredients`
-                ON
-                    `recipes_ingredients`.`ingredient_id` = `ingredients`.`ingredient_id`
-                WHERE
-                    `recipe_id` = {recipe_id}
-            """.format(
-                recipe_id = recipe_id
-            )
-        query = query.format(
-            amount_grams = ("" if recipe_id is None else "`recipes_ingredients`.`amount_g` AS amount_grams,"),
-            where_recipe_id = where_recipe_id
-        )
+            JOIN
+                `recipes_ingredients`
+            ON
+                `recipes_ingredients`.`ingredient_id` = `ingredients`.`ingredient_id`
+            WHERE
+                `recipe_id` = ?;
+        """, (recipe_id,))
 
         return query
 
     @staticmethod
-    def get_recipe_usage_query(recipe_id: int | None = None) -> Query:
-        assert (isinstance(recipe_id, int) or recipe_id is None)
-        if (isinstance(recipe_id, int)):
-            assert (recipe_id > 0)
-        query: Query = """
+    def get_ingredients_query() -> Query:
+        query: Query = Query("""
+            SELECT
+                `ingredients`.`ingredient_id`,
+                `ingredients`.`ingredient_type_id`,
+                `ingredient_types`.`ingredient_type`,
+                `ingredients`.`ingredient_brand_id`,
+                `ingredient_brands`.`name` AS ingredient_brand,
+                `ingredients`.`nutrition_info_id`,
+                `nutrition_info`.*
+            FROM
+                `ingredients`
+            JOIN
+                `ingredient_types`
+            ON
+                `ingredient_types`.`ingredient_type_id` = `ingredients`.`ingredient_type_id`
+            JOIN
+                `ingredient_brands`
+            ON
+                `ingredient_brands`.`ingredient_brand_id` = `ingredients`.`ingredient_brand_id`
+            JOIN
+                `nutrition_info`
+            ON
+                `nutrition_info`.`nutrition_info_id` = `ingredients`.`nutrition_info_id`;
+        """)
+
+        return query
+
+    @staticmethod
+    def get_recipe_usage_query(recipe_id: int) -> Query:
+        assert (isinstance(recipe_id, int))
+        assert (recipe_id > 0)
+        query: Query = Query("""
             SELECT
                 `recipe_usage_id`,
                 `recipe_id`,
                 `datetime`
             FROM
                 `recipe_usage`
-            {where_recipe_id};
-        """
-        where_recipe_id: Query = ""
-        if (recipe_id is not None):
-            where_recipe_id = """
-                WHERE
-                    `recipe_id` = {recipe_id}
-            """.format(
-                recipe_id = recipe_id
-            )
-        query = query.format(
-            where_recipe_id = where_recipe_id
-        )
+            WHERE
+                `recipe_id` = ?;
+        """, (recipe_id,))
+
+        return query
+
+    @staticmethod
+    def get_all_recipe_usage_query() -> Query:
+        query: Query = Query("""
+            SELECT
+                `recipe_usage_id`,
+                `recipe_id`,
+                `datetime`
+            FROM
+                `recipe_usage`
+        """)
+
         return query

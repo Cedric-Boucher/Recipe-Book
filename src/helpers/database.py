@@ -1,8 +1,8 @@
 import sqlite3
 import os
 
-from queries import Query
 from helpers.logger import Logger
+from data_types.query import Query
 
 class Database:
     def __init__(self, filename: str, log_file_path: str):
@@ -11,6 +11,17 @@ class Database:
         self.__filename: str = os.path.abspath(filename)
         self.__connection: None | sqlite3.Connection = None
         self.__cursor: None | sqlite3.Cursor = None
+
+        folder: str = os.path.dirname(self.__filename)
+
+        self.__logger.log("Using database file at '{}'".format(self.__filename))
+        self.__logger.log("In folder '{}'".format(folder))
+
+        if (not os.path.exists(folder) or not os.path.isdir(folder)):
+            self.__logger.log("Specified folder for database file does not exist, creating it")
+            os.makedirs(folder)
+            self.__logger.log("Database folder recursively created")
+
         self.__connect()
 
     def __del__(self):
@@ -40,8 +51,11 @@ class Database:
     def run_query(self, query: Query) -> list[sqlite3.Row]:
         assert (self.__connection is not None)
         assert (self.__cursor is not None)
-        self.__logger.log("Running query:\n{query}".format(query = query))
-        self.__cursor.execute(query)
+        self.__logger.log("Running query:\n{query}\nwith parameters:\n{parameters}".format(
+            query = query.sql_query,
+            parameters = query.parameters
+        ))
+        self.__cursor.execute(query.sql_query, query.parameters)
         self.__connection.commit()
         self.__logger.log("Query executed, fetching results")
         results: list[sqlite3.Row] = self.__cursor.fetchall()
@@ -58,32 +72,8 @@ class Database:
 
         return results
 
-    def run_query_insert_blob(self, query: Query, blobs: tuple[bytes, ...]) -> list[sqlite3.Row]:
-        assert (self.__connection is not None)
-        assert (self.__cursor is not None)
-        assert (isinstance(blobs, tuple))
-        for blob in blobs:
-            assert (isinstance(blob, bytes))
-        self.__logger.log("Running blobs insert query:\n{query}".format(query = query))
-        self.__cursor.execute(query, blobs)
-        self.__connection.commit()
-        self.__logger.log("Blobs insert query executed, fetching results")
-        results: list[sqlite3.Row] = self.__cursor.fetchall()
-        if len(results) > 0:
-            columns: list[str] = results[0].keys()
-            self.__logger.log("Result columns:\n{columns}".format(columns = columns))
-            results_string: str = str()
-            for result in results:
-                results_string += str(list(result))
-                results_string += "\n"
-            self.__logger.log("Results fetched:\n{results}".format(results = results_string))
-        else:
-            self.__logger.log("No results")
-
-        return results
-
-
-    def get_last_row_id(self) -> int | None:
+    @property
+    def last_row_id(self) -> int | None:
         assert (self.__connection is not None)
         assert (self.__cursor is not None)
         row_id: int | None = self.__cursor.lastrowid
