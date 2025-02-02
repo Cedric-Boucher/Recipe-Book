@@ -15,6 +15,8 @@
    12. As a user I want to be able to provide only the nutrition facts I am interested in for my ingredients
    13. As a user I want to be able to edit the nutrition facts for my ingredients later (for example, to provide additional information)
    14. As a user I want to be able to edit the historical cost of my ingredients in case I have data from the past or made a mistake
+   15. As a user I want to be able to set a preferred measurement unit to use for each of my ingredients
+   16. As a user I want to be able to set a preferred measurement unit for an ingredient in a specific recipe, as an override of the unit for the global ingredient
 2. Interfacing
    1. As a user I want to be able to export my recipes to a file
    2. As a user I want to be able to export my ingredients to a file
@@ -31,3 +33,8 @@
    2. As a user I want to be able to search my recipes by name
    3. As a user I want to be able to search my ingredients by name
    4. As a user I want to be able to find which recipes I can cook with a certain list of ingredients (the ones I have)
+5. Conversion
+   1. As a user I want to be able to convert between different measurement units
+   2. As a user I want to be able to use the metric system of measurement units
+   3. As a user I want to be able to use the imperial system of measurement units
+   4. As a user I want to be able to convert between mass and volume units
